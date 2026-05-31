@@ -4,7 +4,7 @@ import participantController from './participant.controller';
 
 const router = Router();
 
-router.get('/', participantController.index);
+router.get('/', isAuth, participantController.index);
 router.get('/players', participantController.players);
 router.get('/spectators', participantController.spectators);
 router.delete('/u/:userId/e/:eventId', isAuth, participantController.removeById);

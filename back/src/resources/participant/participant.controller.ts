@@ -12,7 +12,7 @@ const index = async (req: Request, res: Response) => {
  schema: [{ $ref: '#/definitions/Participant' }]
  }
  #swagger.responses[401] = {
- description: 'User unautorized.'
+ description: 'User unauthenticated.'
  }
  #swagger.responses[500] = {
  description: "Internal Server Error"
@@ -33,7 +33,7 @@ const players = async (req: Request, res: Response) => {
  schema: [{ $ref: '#/definitions/Participant' }]
  }
  #swagger.responses[401] = {
- description: 'User unautorized.'
+ description: 'User unauthenticated.'
  }
  #swagger.responses[500] = {
  description: "Internal Server Error"
@@ -54,7 +54,7 @@ const spectators = async (req: Request, res: Response) => {
  schema: [{ $ref: '#/definitions/Participant' }]
  }
  #swagger.responses[401] = {
- description: 'User unautorized.'
+ description: 'User unauthenticated.'
  }
  #swagger.responses[500] = {
  description: "Internal Server Error"
@@ -77,7 +77,7 @@ const removeById = async (req: Request, res: Response) => {
  description: "User deleted."
  }
  #swagger.responses[401] = {
- description: 'User unautorized.'
+ description: 'User unauthenticated.'
  }
  #swagger.responses[406] = {
  description:  'Não existe um evento com o id informado.'
@@ -110,7 +110,7 @@ const remove = async (req: Request, res: Response) => {
  description: "User deleted."
  }
  #swagger.responses[401] = {
- description: 'User unautorized.'
+ description: 'User unauthenticated.'
  }
  #swagger.responses[406] = {
  description:  'Não existe um evento com o id informado.'
@@ -140,7 +140,7 @@ const createAsPlayer = async (req: Request, res: Response) => {
  description: 'User now participates in event.'
  }
  #swagger.responses[401] = {
- description: 'User unautorized.'
+ description: 'User unauthenticated.'
  }
  #swagger.responses[406] = {
  description:  'Não existe um evento com o id informado.'
@@ -177,7 +177,7 @@ const createAsSpectator = async (req: Request, res: Response) => {
  description: 'User now participates in event.'
  }
  #swagger.responses[401] = {
- description: 'User unautorized.'
+ description: 'User unauthenticated.'
  }
  #swagger.responses[406] = {
  description:  'Não existe um evento com o id informado.'

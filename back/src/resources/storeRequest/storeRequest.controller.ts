@@ -11,7 +11,7 @@ const index = async (req: Request, res: Response) => {
  #swagger.responses[200] = {
  schema: [{ $ref: '#/definitions/StoreRequest' }]
  }
- #swagger.responses[401] = {
+ #swagger.responses[403] = {
  description: 'User unautorized.'
  }
  #swagger.responses[500] = {
@@ -33,7 +33,7 @@ const indexFromUser = async (req: Request, res: Response) => {
  #swagger.responses[200] = {
  schema: [{ $ref: '#/definitions/StoreRequest' }]
  }
- #swagger.responses[401] = {
+ #swagger.responses[403] = {
  description: 'User unautorized.'
  }
  #swagger.responses[500] = {
@@ -58,8 +58,8 @@ const create = async (req: Request, res: Response) => {
  #swagger.responses[201] = {
  schema: { $ref: '#/definitions/StoreRequest' }
  }
- #swagger.responses[401] = {
- description: 'User unautorized.'
+ #swagger.responses[403] = {
+ description: 'User can't become store.'
  }
  #swagger.responses[409] = {
  description:  'Já existe um pedido pendente para este usuário.'
@@ -78,7 +78,7 @@ const create = async (req: Request, res: Response) => {
     } as RequestDTO;
 
   if(req.session.utid != UserTypes.client){
-    res.status(StatusCodes.UNAUTHORIZED).send(ReasonPhrases.UNAUTHORIZED);
+    res.status(StatusCodes.FORBIDDEN).send(ReasonPhrases.FORBIDDEN);
   }
 
   try {
@@ -102,7 +102,7 @@ const remove = async (req: Request, res: Response) => {
  #swagger.responses[204] = {
  description: "Request deleted."
  }
- #swagger.responses[401] = {
+ #swagger.responses[403] = {
  description: 'User unautorized.'
  }
  #swagger.responses[500] = {
@@ -112,7 +112,7 @@ const remove = async (req: Request, res: Response) => {
   try {
     const request = await storeRequestService.findRequest(req.params.requestId as string);
     if(req.session.utid != UserTypes.admin || req.session.uid != request?.userId){
-        res.status(StatusCodes.UNAUTHORIZED).send(ReasonPhrases.UNAUTHORIZED);
+        res.status(StatusCodes.FORBIDDEN).send(ReasonPhrases.FORBIDDEN);
     }
     await storeRequestService.remove(req.params.requestId as string);
     res.status(StatusCodes.NO_CONTENT).send(ReasonPhrases.NO_CONTENT);
@@ -128,7 +128,7 @@ const read = async (req: Request, res: Response) => {
  #swagger.responses[200] = {
  schema: { $ref: '#/definitions/StoreRequest' }
  }
- #swagger.responses[401] = {
+ #swagger.responses[403] = {
  description: 'User unautorized.'
  }
  #swagger.responses[500] = {
@@ -139,7 +139,7 @@ const read = async (req: Request, res: Response) => {
   try {
     const request = await storeRequestService.findRequest(req.params.requestId as string);
     if(req.session.utid != UserTypes.admin || req.session.uid != request?.userId){
-        res.status(StatusCodes.UNAUTHORIZED).send(ReasonPhrases.UNAUTHORIZED);
+        res.status(StatusCodes.FORBIDDEN).send(ReasonPhrases.FORBIDDEN);
     }
     res.json(request);
   } catch (e) {

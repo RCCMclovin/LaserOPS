@@ -11,7 +11,7 @@ const index = async (req: Request, res: Response) => {
  #swagger.responses[200] = {
  schema: [{ $ref: '#/definitions/UserDTO' }]
  }
- #swagger.responses[401] = {
+ #swagger.responses[403] = {
  description: 'User unautorized.'
  }
  #swagger.responses[500] = {
@@ -36,7 +36,7 @@ const create = async (req: Request, res: Response) => {
  #swagger.responses[201] = {
  schema: { $ref: '#/definitions/UserDTO' }
  }
- #swagger.responses[401] = {
+ #swagger.responses[403] = {
  description: 'User unautorized.'
  }
  #swagger.responses[409] = {
@@ -74,7 +74,7 @@ const update = async (req: Request, res: Response) => {
  #swagger.responses[200] = {
  schema: { $ref: '#/definitions/UserDTO' }
  }
- #swagger.responses[401] = {
+ #swagger.responses[403] = {
  description: 'User unautorized.'
  }
  #swagger.responses[406] = {
@@ -107,7 +107,7 @@ const remove = async (req: Request, res: Response) => {
  #swagger.responses[204] = {
  description: "User deleted."
  }
- #swagger.responses[401] = {
+ #swagger.responses[403] = {
  description: 'User unautorized.'
  }
  #swagger.responses[500] = {

@@ -121,7 +121,7 @@
               }
             }
           },
-          "401": {
+          "403": {
             "description": "User unautorized."
           },
           "500": {
@@ -154,7 +154,7 @@
             },
             "description": "Created"
           },
-          "401": {
+          "403": {
             "description": "User unautorized."
           },
           "409": {
@@ -263,7 +263,7 @@
               "$ref": "#/definitions/UserDTO"
             }
           },
-          "401": {
+          "403": {
             "description": "User unautorized."
           },
           "406": {
@@ -296,7 +296,7 @@
           "204": {
             "description": "User deleted."
           },
-          "401": {
+          "403": {
             "description": "User unautorized."
           },
           "500": {
@@ -325,7 +325,7 @@
               }
             }
           },
-          "401": {
+          "403": {
             "description": "User unautorized."
           },
           "500": {
@@ -346,29 +346,20 @@
             "schema": {
               "$ref": "#/definitions/CreateRequestDTO"
             }
+          },
+          {
+            "name": "requestId",
+            "description": "ID do pedido",
+            "in": "query",
+            "type": "string"
           }
         ],
         "responses": {
-          "200": {
-            "description": "OK"
-          },
           "201": {
             "schema": {
               "$ref": "#/definitions/StoreRequest"
             },
             "description": "Created"
-          },
-          "401": {
-            "description": "User unautorized."
-          },
-          "409": {
-            "description": "Já existe um pedido pendente para este usuário."
-          },
-          "422": {
-            "description": "Body inválido."
-          },
-          "500": {
-            "description": "Internal Server Error."
           }
         }
       }
@@ -402,7 +393,7 @@
               }
             }
           },
-          "401": {
+          "403": {
             "description": "User unautorized."
           },
           "500": {
@@ -434,7 +425,7 @@
               "$ref": "#/definitions/StoreRequest"
             }
           },
-          "401": {
+          "403": {
             "description": "User unautorized."
           },
           "500": {
@@ -461,7 +452,7 @@
           "204": {
             "description": "Request deleted."
           },
-          "401": {
+          "403": {
             "description": "User unautorized."
           },
           "500": {
@@ -491,7 +482,7 @@
             }
           },
           "401": {
-            "description": "User unautorized."
+            "description": "User unauthenticated."
           },
           "500": {
             "description": "Internal Server Error"
@@ -524,7 +515,7 @@
             "description": "Created"
           },
           "401": {
-            "description": "User unautorized."
+            "description": "User unauthenticated."
           },
           "422": {
             "description": "Body inválido."
@@ -558,6 +549,9 @@
             }
           },
           "401": {
+            "description": "User unauthenticated."
+          },
+          "403": {
             "description": "User unautorized."
           },
           "406": {
@@ -601,7 +595,7 @@
               }
             }
           },
-          "401": {
+          "403": {
             "description": "User unautorized."
           },
           "500": {
@@ -638,7 +632,7 @@
               "$ref": "#/definitions/UserDTO"
             }
           },
-          "401": {
+          "403": {
             "description": "User unautorized."
           },
           "406": {
@@ -695,6 +689,9 @@
             "description": "Event deleted."
           },
           "401": {
+            "description": "User unauthenticated."
+          },
+          "403": {
             "description": "User unautorized."
           },
           "500": {
@@ -724,7 +721,7 @@
             }
           },
           "401": {
-            "description": "User unautorized."
+            "description": "User unauthenticated."
           },
           "500": {
             "description": "Internal Server Error"
@@ -753,7 +750,7 @@
             }
           },
           "401": {
-            "description": "User unautorized."
+            "description": "User unauthenticated."
           },
           "500": {
             "description": "Internal Server Error"
@@ -782,7 +779,7 @@
             }
           },
           "401": {
-            "description": "User unautorized."
+            "description": "User unauthenticated."
           },
           "500": {
             "description": "Internal Server Error"
@@ -818,7 +815,7 @@
             "description": "User deleted."
           },
           "401": {
-            "description": "User unautorized."
+            "description": "User unauthenticated."
           },
           "406": {
             "description": "Não existe um evento com o id informado."
@@ -850,7 +847,7 @@
             "description": "User now participates in event."
           },
           "401": {
-            "description": "User unautorized."
+            "description": "User unauthenticated."
           },
           "406": {
             "description": "Não existe um evento com o id informado."
@@ -883,7 +880,7 @@
             "description": "User deleted."
           },
           "401": {
-            "description": "User unautorized."
+            "description": "User unauthenticated."
           },
           "406": {
             "description": "Não existe um evento com o id informado."
@@ -922,7 +919,7 @@
             "description": "User now participates in event."
           },
           "401": {
-            "description": "User unautorized."
+            "description": "User unauthenticated."
           },
           "406": {
             "description": "Não existe um evento com o id informado."

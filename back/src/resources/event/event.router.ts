@@ -8,7 +8,7 @@ import userController from '../user/user.controller';
 
 const router = Router();
 
-router.get('/', eventController.index);
+router.get('/', isAuth, eventController.index);
 router.post('/publish', isAuth, eventController.togglePublish);
 router.get('/:userId', isAdminOrSelf, eventController.indexFromUser);
 router.post('/', isAuth, validate(CreateEventDTOSchema), eventController.create);

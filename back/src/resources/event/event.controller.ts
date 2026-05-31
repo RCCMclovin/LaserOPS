@@ -14,7 +14,7 @@ const index = async (req: Request, res: Response) => {
  schema: [{ $ref: '#/definitions/EventPublic' }]
  }
  #swagger.responses[401] = {
- description: 'User unautorized.'
+ description: 'User unauthenticated.'
  }
  #swagger.responses[500] = {
  description: "Internal Server Error"
@@ -41,7 +41,7 @@ const indexFromUser = async (req: Request, res: Response) => {
  #swagger.responses[200] = {
  schema: [{ $ref: '#/definitions/EventPublic' }]
  }
- #swagger.responses[401] = {
+ #swagger.responses[403] = {
  description: 'User unautorized.'
  }
  #swagger.responses[500] = {
@@ -73,7 +73,7 @@ const create = async (req: Request, res: Response) => {
  schema: { $ref: '#/definitions/Event' }
  }
  #swagger.responses[401] = {
- description: 'User unautorized.'
+ description: 'User unauthenticated.'
  }
  #swagger.responses[422] = {
  description:  'Body inválido.'
@@ -119,6 +119,9 @@ const remove = async (req: Request, res: Response) => {
  description: "Event deleted."
  }
  #swagger.responses[401] = {
+ description: 'User unauthenticated.'
+ }
+ #swagger.responses[403] = {
  description: 'User unautorized.'
  }
  #swagger.responses[500] = {
@@ -128,7 +131,7 @@ const remove = async (req: Request, res: Response) => {
   try {
     const event = await eventService.read(req.params.eventId as string);
     if(req.session.utid != UserTypes.admin && req.session.uid != event?.creatorId){
-        res.status(StatusCodes.UNAUTHORIZED).send(ReasonPhrases.UNAUTHORIZED);
+    res.status(StatusCodes.FORBIDDEN).send(ReasonPhrases.FORBIDDEN);
     }
     await eventService.remove(req.params.eventId as string);
     res.status(StatusCodes.NO_CONTENT).send(ReasonPhrases.NO_CONTENT);
@@ -148,7 +151,7 @@ const update = async (req: Request, res: Response) => {
  #swagger.responses[200] = {
  schema: { $ref: '#/definitions/Event' }
  }
- #swagger.responses[401] = {
+ #swagger.responses[403] = {
  description: 'User unautorized.'
  }
  #swagger.responses[406] = {
@@ -167,7 +170,7 @@ const update = async (req: Request, res: Response) => {
         res.status(StatusCodes.NOT_ACCEPTABLE).send(ReasonPhrases.NOT_ACCEPTABLE);
     }
     if(req.session.utid != UserTypes.admin && req.session.uid != event?.creatorId){
-        res.status(StatusCodes.UNAUTHORIZED).send(ReasonPhrases.UNAUTHORIZED);
+      res.status(StatusCodes.FORBIDDEN).send(ReasonPhrases.FORBIDDEN);
     }
     const new_event = {
     ...req.body as CreateEventDTO, 
@@ -191,6 +194,9 @@ const togglePublish = async (req: Request, res: Response) => {
  schema: { $ref: '#/definitions/Event' }
  }
  #swagger.responses[401] = {
+ description: 'User unauthenticated.'
+ }
+ #swagger.responses[403] = {
  description: 'User unautorized.'
  }
  #swagger.responses[406] = {
@@ -209,7 +215,8 @@ const togglePublish = async (req: Request, res: Response) => {
         res.status(StatusCodes.NOT_ACCEPTABLE).send(ReasonPhrases.NOT_ACCEPTABLE);
     }
     if(req.session.utid != UserTypes.admin && req.session.uid != event?.creatorId){
-        res.status(StatusCodes.UNAUTHORIZED).send(ReasonPhrases.UNAUTHORIZED);
+        
+    res.status(StatusCodes.FORBIDDEN).send(ReasonPhrases.FORBIDDEN);
     }
     const new_event = {
     date:event?.date,
@@ -234,7 +241,7 @@ const read = async (req: Request, res: Response) => {
  schema: { $ref: '#/definitions/EventPublic' | $ref: '#/definitions/Event' }
  }
  #swagger.responses[401] = {
- description: 'User unautorized.'
+ description: 'User unauthenticated.'
  }
  #swagger.responses[406] = {
  description:  'Não existe um evento com o id informado.'
