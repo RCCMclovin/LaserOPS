@@ -146,7 +146,7 @@ const update = async (req: Request, res: Response) => {
  schema: { $ref: '#/definitions/CreateEventDTO' }
  } 
  #swagger.responses[200] = {
- schema: { $ref: '#/definitions/UserDTO' }
+ schema: { $ref: '#/definitions/Event' }
  }
  #swagger.responses[401] = {
  description: 'User unautorized.'
@@ -188,7 +188,7 @@ const togglePublish = async (req: Request, res: Response) => {
  #swagger.summary = 'Publica/Despublica um evento.'
  #swagger.parameters['eventId'] = { description: 'ID do evento' }
  #swagger.responses[200] = {
- schema: { $ref: '#/definitions/UserDTO' }
+ schema: { $ref: '#/definitions/Event' }
  }
  #swagger.responses[401] = {
  description: 'User unautorized.'

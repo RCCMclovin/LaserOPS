@@ -10,8 +10,8 @@ async function getAllPlayers(): Promise<Participant[]>{
   const participants = await prisma.participant.findMany({where:{role:"player"}});
   return participants;
 }
-async function getAllExpectator(): Promise<Participant[]>{
-  const participants = await prisma.participant.findMany({where:{role:"expectator"}});
+async function getAllSpectator(): Promise<Participant[]>{
+  const participants = await prisma.participant.findMany({where:{role:"spectator"}});
   return participants;
 }
 async function remove(userId:string, eventId: string): Promise<Participant> {
@@ -26,7 +26,7 @@ async function create(userId:string, eventId: string, role:string): Promise<Part
 export default{
     getAllParticipants,
     getAllPlayers,
-    getAllExpectator,
+    getAllSpectator,
     remove,
     create,
 }

@@ -1,6 +1,6 @@
 import { Request, Response } from 'express';
 import userService from './user.service';
-import { CreateUserDTO, UpdateUserDTO} from './user.types';
+import { CreateUserDTO} from './user.types';
 import { ReasonPhrases, StatusCodes } from 'http-status-codes';
 import { UserTypes } from '../userType/userType.consts';
 
@@ -69,7 +69,7 @@ const update = async (req: Request, res: Response) => {
  #swagger.parameters['userId'] = { description: 'ID do usuário' }
  #swagger.parameters['body'] = {
  in: 'body',
- schema: { $ref: '#/definitions/CreateUserDTO' }
+ schema: { $ref: '#/definitions/UpdateUserDTO' }
  } 
  #swagger.responses[200] = {
  schema: { $ref: '#/definitions/UserDTO' }
@@ -88,7 +88,7 @@ const update = async (req: Request, res: Response) => {
  }
 */
   try {
-    const user = req.body as UpdateUserDTO;
+    const user = req.body as CreateUserDTO;
     if (await userService.readUser(req.params.userId as string)) {
       const newUser = await userService.updateUser(req.params.userId as string, user);
       res.json(newUser);
@@ -174,17 +174,8 @@ const checkRole = async (req: Request, res: Response) => {
     if (user.userTypeId === UserTypes.admin) {
         return res.json({ name: user.name, role: "admin" });
     }
-<<<<<<< HEAD
-    if(user.userTypeId == UserTypes.store){
-        res.json({name:user.name, role: "store"}).send();
-        return;
-    }else{
-        res.status(StatusCodes.INTERNAL_SERVER_ERROR).send(ReasonPhrases.INTERNAL_SERVER_ERROR);
-        return;
-=======
     if (user.userTypeId === UserTypes.client) {
         return res.json({ name: user.name, role: "client" });
->>>>>>> refs/remotes/origin/main
     }
     if (user.userTypeId === UserTypes.store) {
         return res.json({ name: user.name, role: "store" });

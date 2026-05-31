@@ -1,0 +1,1165 @@
+{
+  "swagger": "2.0",
+  "info": {
+    "title": "API dos notas",
+    "description": "Documentação da API",
+    "version": "1.0"
+  },
+  "host": "localhost:3334",
+  "basePath": "/",
+  "schemes": [
+    "http"
+  ],
+  "paths": {
+    "/v1/auth/signup": {
+      "post": {
+        "tags": [
+          "Auth"
+        ],
+        "summary": "Usuário é criado e faz Login.",
+        "description": "",
+        "parameters": [
+          {
+            "name": "body",
+            "in": "body",
+            "schema": {
+              "$ref": "#/definitions/SignUpDto"
+            }
+          }
+        ],
+        "responses": {
+          "201": {
+            "schema": {
+              "$ref": "#/definitions/UserDTO"
+            },
+            "description": "Created"
+          },
+          "400": {
+            "description": "Email informado já está sendo usado."
+          },
+          "422": {
+            "description": "Body inválido."
+          },
+          "500": {
+            "description": "Internal Server Error."
+          }
+        }
+      }
+    },
+    "/v1/auth/login": {
+      "post": {
+        "tags": [
+          "Auth"
+        ],
+        "summary": "Usuário faz Login.",
+        "description": "",
+        "parameters": [
+          {
+            "name": "body",
+            "in": "body",
+            "schema": {
+              "$ref": "#/definitions/AuthDTO"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "schema": {
+              "$ref": "#/definitions/Auth"
+            },
+            "description": "OK"
+          },
+          "401": {
+            "description": "Usuário ou senha incorretos."
+          },
+          "422": {
+            "description": "Body inválido."
+          },
+          "500": {
+            "description": "Internal Server Error."
+          }
+        }
+      }
+    },
+    "/v1/auth/logout": {
+      "post": {
+        "tags": [
+          "Auth"
+        ],
+        "summary": "Usuário faz Logout.",
+        "description": "",
+        "responses": {
+          "200": {
+            "description": "OK"
+          },
+          "401": {
+            "description": "Usuário não logado."
+          },
+          "500": {
+            "description": "Internal Server Error."
+          }
+        }
+      }
+    },
+    "/v1/user/": {
+      "get": {
+        "tags": [
+          "Usuários"
+        ],
+        "summary": "Recupera dados de todos os usuários.",
+        "description": "",
+        "responses": {
+          "200": {
+            "description": "OK",
+            "schema": {
+              "type": "array",
+              "items": {
+                "$ref": "#/definitions/UserDTO"
+              },
+              "xml": {
+                "name": "main"
+              }
+            }
+          },
+          "401": {
+            "description": "User unautorized."
+          },
+          "500": {
+            "description": "Internal Server Error"
+          }
+        }
+      },
+      "post": {
+        "tags": [
+          "Usuários"
+        ],
+        "summary": "Adiciona um novo usuário na base.",
+        "description": "",
+        "parameters": [
+          {
+            "name": "body",
+            "in": "body",
+            "schema": {
+              "$ref": "#/definitions/CreateUserDTO"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "OK"
+          },
+          "201": {
+            "schema": {
+              "$ref": "#/definitions/UserDTO"
+            },
+            "description": "Created"
+          },
+          "401": {
+            "description": "User unautorized."
+          },
+          "409": {
+            "description": "Já existe um usuário com o id informado."
+          },
+          "422": {
+            "description": "Body inválido."
+          },
+          "500": {
+            "description": "Internal Server Error."
+          }
+        }
+      }
+    },
+    "/v1/user/checkemail/{email}": {
+      "get": {
+        "tags": [
+          "Usuários"
+        ],
+        "summary": "Verifica se um email já está cadastrado.",
+        "description": "",
+        "parameters": [
+          {
+            "name": "email",
+            "in": "path",
+            "required": true,
+            "type": "string",
+            "description": "Email a ser verificado"
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "true se o email já está cadastrado, false caso contrário",
+            "type": "boolean"
+          },
+          "500": {
+            "description": "Internal Server Error"
+          }
+        }
+      }
+    },
+    "/v1/user/chkrole": {
+      "get": {
+        "description": "",
+        "responses": {
+          "200": {
+            "description": "OK"
+          }
+        }
+      }
+    },
+    "/v1/user/{userId}": {
+      "get": {
+        "tags": [
+          "Usuários"
+        ],
+        "summary": "Recupera dados de um usuário específico.",
+        "description": "",
+        "parameters": [
+          {
+            "name": "userId",
+            "in": "path",
+            "required": true,
+            "type": "string",
+            "description": "ID do usuário"
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "OK",
+            "schema": {
+              "$ref": "#/definitions/UserDTO"
+            }
+          },
+          "500": {
+            "description": "Internal Server Error"
+          }
+        }
+      },
+      "put": {
+        "tags": [
+          "Usuários"
+        ],
+        "summary": "Atualiza os dados de um usuário específico.",
+        "description": "",
+        "parameters": [
+          {
+            "name": "userId",
+            "in": "path",
+            "required": true,
+            "type": "string",
+            "description": "ID do usuário"
+          },
+          {
+            "name": "body",
+            "in": "body",
+            "schema": {
+              "$ref": "#/definitions/UpdateUserDTO"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "OK",
+            "schema": {
+              "$ref": "#/definitions/UserDTO"
+            }
+          },
+          "401": {
+            "description": "User unautorized."
+          },
+          "406": {
+            "description": "Não existe um usuário com o id informado."
+          },
+          "422": {
+            "description": "Body inválido."
+          },
+          "500": {
+            "description": "Internal Server Error."
+          }
+        }
+      },
+      "delete": {
+        "tags": [
+          "Usuários"
+        ],
+        "summary": "Remove os dados de um usuário específico.",
+        "description": "",
+        "parameters": [
+          {
+            "name": "userId",
+            "in": "path",
+            "required": true,
+            "type": "string",
+            "description": "ID do usuário"
+          }
+        ],
+        "responses": {
+          "204": {
+            "description": "User deleted."
+          },
+          "401": {
+            "description": "User unautorized."
+          },
+          "500": {
+            "description": "Internal Server Error."
+          }
+        }
+      }
+    },
+    "/v1/request/": {
+      "get": {
+        "tags": [
+          "StoreRequests"
+        ],
+        "summary": "Recupera dados de todos os pedidos para ser logista.",
+        "description": "",
+        "responses": {
+          "200": {
+            "description": "OK",
+            "schema": {
+              "type": "array",
+              "items": {
+                "$ref": "#/definitions/StoreRequest"
+              },
+              "xml": {
+                "name": "main"
+              }
+            }
+          },
+          "401": {
+            "description": "User unautorized."
+          },
+          "500": {
+            "description": "Internal Server Error"
+          }
+        }
+      },
+      "post": {
+        "tags": [
+          "StoreRequests"
+        ],
+        "summary": "Faz um pedido para ser logista.",
+        "description": "",
+        "parameters": [
+          {
+            "name": "body",
+            "in": "body",
+            "schema": {
+              "$ref": "#/definitions/CreateRequestDTO"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "OK"
+          },
+          "201": {
+            "schema": {
+              "$ref": "#/definitions/StoreRequest"
+            },
+            "description": "Created"
+          },
+          "401": {
+            "description": "User unautorized."
+          },
+          "409": {
+            "description": "Já existe um pedido pendente para este usuário."
+          },
+          "422": {
+            "description": "Body inválido."
+          },
+          "500": {
+            "description": "Internal Server Error."
+          }
+        }
+      }
+    },
+    "/v1/request/u/{userId}": {
+      "get": {
+        "tags": [
+          "StoreRequests"
+        ],
+        "summary": "Recupera dados de todos os pedidos de um usuário para ser logista.",
+        "description": "",
+        "parameters": [
+          {
+            "name": "userId",
+            "in": "path",
+            "required": true,
+            "type": "string",
+            "description": "ID do usuário"
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "OK",
+            "schema": {
+              "type": "array",
+              "items": {
+                "$ref": "#/definitions/StoreRequest"
+              },
+              "xml": {
+                "name": "main"
+              }
+            }
+          },
+          "401": {
+            "description": "User unautorized."
+          },
+          "500": {
+            "description": "Internal Server Error"
+          }
+        }
+      }
+    },
+    "/v1/request/{requestId}": {
+      "get": {
+        "tags": [
+          "StoreRequests"
+        ],
+        "summary": "Recupera dados de um pedido específico.",
+        "description": "",
+        "parameters": [
+          {
+            "name": "requestId",
+            "in": "path",
+            "required": true,
+            "type": "string",
+            "description": "ID do pedido"
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "OK",
+            "schema": {
+              "$ref": "#/definitions/StoreRequest"
+            }
+          },
+          "401": {
+            "description": "User unautorized."
+          },
+          "500": {
+            "description": "Internal Server Error"
+          }
+        }
+      },
+      "delete": {
+        "tags": [
+          "StoreRequests"
+        ],
+        "summary": "Remove os dados de um pedido para ser logista.",
+        "description": "",
+        "parameters": [
+          {
+            "name": "requestId",
+            "in": "path",
+            "required": true,
+            "type": "string",
+            "description": "ID do pedido"
+          }
+        ],
+        "responses": {
+          "204": {
+            "description": "Request deleted."
+          },
+          "401": {
+            "description": "User unautorized."
+          },
+          "500": {
+            "description": "Internal Server Error."
+          }
+        }
+      }
+    },
+    "/v1/event/": {
+      "get": {
+        "tags": [
+          "Eventos"
+        ],
+        "summary": "Recupera dados de todos os eventos.",
+        "description": "",
+        "responses": {
+          "200": {
+            "description": "OK",
+            "schema": {
+              "type": "array",
+              "items": {
+                "$ref": "#/definitions/EventPublic"
+              },
+              "xml": {
+                "name": "main"
+              }
+            }
+          },
+          "401": {
+            "description": "User unautorized."
+          },
+          "500": {
+            "description": "Internal Server Error"
+          }
+        }
+      },
+      "post": {
+        "tags": [
+          "Eventos"
+        ],
+        "summary": "Cria um evento.",
+        "description": "",
+        "parameters": [
+          {
+            "name": "body",
+            "in": "body",
+            "schema": {
+              "$ref": "#/definitions/CreateEventDTO"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "OK"
+          },
+          "201": {
+            "schema": {
+              "$ref": "#/definitions/Event"
+            },
+            "description": "Created"
+          },
+          "401": {
+            "description": "User unautorized."
+          },
+          "422": {
+            "description": "Body inválido."
+          },
+          "500": {
+            "description": "Internal Server Error."
+          }
+        }
+      }
+    },
+    "/v1/event/publish": {
+      "post": {
+        "tags": [
+          "Eventos"
+        ],
+        "summary": "Publica/Despublica um evento.",
+        "description": "",
+        "parameters": [
+          {
+            "name": "eventId",
+            "description": "ID do evento",
+            "in": "query",
+            "type": "string"
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "OK",
+            "schema": {
+              "$ref": "#/definitions/Event"
+            }
+          },
+          "401": {
+            "description": "User unautorized."
+          },
+          "406": {
+            "description": "Não existe um evento com o id informado."
+          },
+          "422": {
+            "description": "Body inválido."
+          },
+          "500": {
+            "description": "Internal Server Error."
+          }
+        }
+      }
+    },
+    "/v1/event/{userId}": {
+      "get": {
+        "tags": [
+          "Eventos"
+        ],
+        "summary": "Recupera dados de todos os eventos de um usuário.",
+        "description": "",
+        "parameters": [
+          {
+            "name": "userId",
+            "in": "path",
+            "required": true,
+            "type": "string",
+            "description": "ID do usuário"
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "OK",
+            "schema": {
+              "type": "array",
+              "items": {
+                "$ref": "#/definitions/EventPublic"
+              },
+              "xml": {
+                "name": "main"
+              }
+            }
+          },
+          "401": {
+            "description": "User unautorized."
+          },
+          "500": {
+            "description": "Internal Server Error"
+          }
+        }
+      },
+      "put": {
+        "tags": [
+          "Usuários"
+        ],
+        "summary": "Atualiza os dados de um usuário específico.",
+        "description": "",
+        "parameters": [
+          {
+            "name": "userId",
+            "in": "path",
+            "required": true,
+            "type": "string",
+            "description": "ID do usuário"
+          },
+          {
+            "name": "body",
+            "in": "body",
+            "schema": {
+              "$ref": "#/definitions/UpdateUserDTO"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "OK",
+            "schema": {
+              "$ref": "#/definitions/UserDTO"
+            }
+          },
+          "401": {
+            "description": "User unautorized."
+          },
+          "406": {
+            "description": "Não existe um usuário com o id informado."
+          },
+          "422": {
+            "description": "Body inválido."
+          },
+          "500": {
+            "description": "Internal Server Error."
+          }
+        }
+      }
+    },
+    "/v1/event/{eventId}": {
+      "get": {
+        "tags": [
+          "Eventos"
+        ],
+        "summary": "Recupera dados de um evento específico.",
+        "description": "",
+        "parameters": [
+          {
+            "name": "eventId",
+            "in": "path",
+            "required": true,
+            "type": "string",
+            "description": "ID do evento"
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "OK"
+          }
+        }
+      },
+      "delete": {
+        "tags": [
+          "Eventos"
+        ],
+        "summary": "Remove os dados de um evento.",
+        "description": "",
+        "parameters": [
+          {
+            "name": "eventId",
+            "in": "path",
+            "required": true,
+            "type": "string",
+            "description": "ID do evento"
+          }
+        ],
+        "responses": {
+          "204": {
+            "description": "Event deleted."
+          },
+          "401": {
+            "description": "User unautorized."
+          },
+          "500": {
+            "description": "Internal Server Error."
+          }
+        }
+      }
+    },
+    "/v1/participant/": {
+      "get": {
+        "tags": [
+          "Participante"
+        ],
+        "summary": "Recupera dados de todos os participantes de uma partida.",
+        "description": "",
+        "responses": {
+          "200": {
+            "description": "OK",
+            "schema": {
+              "type": "array",
+              "items": {
+                "$ref": "#/definitions/Participant"
+              },
+              "xml": {
+                "name": "main"
+              }
+            }
+          },
+          "401": {
+            "description": "User unautorized."
+          },
+          "500": {
+            "description": "Internal Server Error"
+          }
+        }
+      }
+    },
+    "/v1/participant/players": {
+      "get": {
+        "tags": [
+          "Participante"
+        ],
+        "summary": "Recupera dados de todos os jogadores de uma partida.",
+        "description": "",
+        "responses": {
+          "200": {
+            "description": "OK",
+            "schema": {
+              "type": "array",
+              "items": {
+                "$ref": "#/definitions/Participant"
+              },
+              "xml": {
+                "name": "main"
+              }
+            }
+          },
+          "401": {
+            "description": "User unautorized."
+          },
+          "500": {
+            "description": "Internal Server Error"
+          }
+        }
+      }
+    },
+    "/v1/participant/spectators": {
+      "get": {
+        "tags": [
+          "Participante"
+        ],
+        "summary": "Recupera dados de todos os espectadores de uma partida.",
+        "description": "",
+        "responses": {
+          "200": {
+            "description": "OK",
+            "schema": {
+              "type": "array",
+              "items": {
+                "$ref": "#/definitions/Participant"
+              },
+              "xml": {
+                "name": "main"
+              }
+            }
+          },
+          "401": {
+            "description": "User unautorized."
+          },
+          "500": {
+            "description": "Internal Server Error"
+          }
+        }
+      }
+    },
+    "/v1/participant/u/{userId}/e/{eventId}": {
+      "delete": {
+        "tags": [
+          "Participante"
+        ],
+        "summary": "Remove os dados de um participante específico.",
+        "description": "",
+        "parameters": [
+          {
+            "name": "userId",
+            "in": "path",
+            "required": true,
+            "type": "string",
+            "description": "ID do usuário"
+          },
+          {
+            "name": "eventId",
+            "in": "path",
+            "required": true,
+            "type": "string",
+            "description": "ID do evento"
+          }
+        ],
+        "responses": {
+          "204": {
+            "description": "User deleted."
+          },
+          "401": {
+            "description": "User unautorized."
+          },
+          "406": {
+            "description": "Não existe um evento com o id informado."
+          },
+          "500": {
+            "description": "Internal Server Error."
+          }
+        }
+      }
+    },
+    "/v1/participant/{eventId}": {
+      "post": {
+        "tags": [
+          "Participante"
+        ],
+        "summary": "Participante se inscreve como espectador.",
+        "description": "",
+        "parameters": [
+          {
+            "name": "eventId",
+            "in": "path",
+            "required": true,
+            "type": "string",
+            "description": "ID do evento"
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "User now participates in event."
+          },
+          "401": {
+            "description": "User unautorized."
+          },
+          "406": {
+            "description": "Não existe um evento com o id informado."
+          },
+          "422": {
+            "description": "Body inválido."
+          },
+          "500": {
+            "description": "Internal Server Error."
+          }
+        }
+      },
+      "delete": {
+        "tags": [
+          "Participante"
+        ],
+        "summary": "O participante se desinscreve.",
+        "description": "",
+        "parameters": [
+          {
+            "name": "eventId",
+            "in": "path",
+            "required": true,
+            "type": "string",
+            "description": "ID do evento"
+          }
+        ],
+        "responses": {
+          "204": {
+            "description": "User deleted."
+          },
+          "401": {
+            "description": "User unautorized."
+          },
+          "406": {
+            "description": "Não existe um evento com o id informado."
+          },
+          "500": {
+            "description": "Internal Server Error."
+          }
+        }
+      }
+    },
+    "/v1/participant/{eventId}/{code}": {
+      "post": {
+        "tags": [
+          "Participante"
+        ],
+        "summary": "Participante se inscreve como jogador.",
+        "description": "",
+        "parameters": [
+          {
+            "name": "eventId",
+            "in": "path",
+            "required": true,
+            "type": "string",
+            "description": "ID do evento"
+          },
+          {
+            "name": "code",
+            "in": "path",
+            "required": true,
+            "type": "string",
+            "description": "Código do evento"
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "User now participates in event."
+          },
+          "401": {
+            "description": "User unautorized."
+          },
+          "406": {
+            "description": "Não existe um evento com o id informado."
+          },
+          "422": {
+            "description": "Body inválido."
+          },
+          "500": {
+            "description": "Internal Server Error."
+          }
+        }
+      }
+    }
+  },
+  "definitions": {
+    "Auth": {
+      "type": "object",
+      "properties": {
+        "msg": {
+          "type": "string",
+          "example": "Usuário autenticado"
+        }
+      }
+    },
+    "AuthDTO": {
+      "type": "object",
+      "properties": {
+        "email": {
+          "type": "string",
+          "example": "email@example.com"
+        },
+        "password": {
+          "type": "string",
+          "example": "SenhaMuitoForte"
+        }
+      }
+    },
+    "SignUpDto": {
+      "type": "object",
+      "properties": {
+        "name": {
+          "type": "string",
+          "example": "Fulano de Tal"
+        },
+        "email": {
+          "type": "string",
+          "example": "email@example.com"
+        },
+        "password": {
+          "type": "string",
+          "example": "SenhaMuitoForte"
+        }
+      }
+    },
+    "LoginDTO": {
+      "type": "object",
+      "properties": {
+        "id": {
+          "type": "string",
+          "example": "98ec6545-23d1-4d9e-a565-0c7452b45a8b"
+        },
+        "name": {
+          "type": "string",
+          "example": "Fulano de Tal"
+        },
+        "email": {
+          "type": "string",
+          "example": "email@example.com"
+        }
+      }
+    },
+    "UserDTO": {
+      "type": "object",
+      "properties": {
+        "id": {
+          "type": "string",
+          "example": "8cdebdfd-122c-4b03-af73-1009a621dfd4"
+        },
+        "email": {
+          "type": "string",
+          "example": "email@example.com"
+        },
+        "name": {
+          "type": "string",
+          "example": "Fulano de Tal"
+        },
+        "createdAt": {
+          "type": "string",
+          "example": "DateTime"
+        },
+        "updatedAt": {
+          "type": "string",
+          "example": "DateTime"
+        },
+        "userTypeId": {
+          "type": "string",
+          "example": "b7790a6f-48de-4ad0-b871-85f3649ef5b4"
+        }
+      }
+    },
+    "EventPublic": {
+      "type": "object",
+      "properties": {
+        "id": {
+          "type": "string",
+          "example": "98ec6545-23d1-4d9e-a565-0c7452b45a8b"
+        },
+        "date": {
+          "type": "string",
+          "example": "DateTime"
+        },
+        "creatorId": {
+          "type": "string",
+          "example": "8cdebdfd-122c-4b03-af73-1009a621dfd4"
+        },
+        "description": {
+          "type": "string",
+          "example": "Text"
+        },
+        "isPublished": {
+          "type": "string",
+          "example": "true"
+        },
+        "createdAt": {
+          "type": "string",
+          "example": "DateTime"
+        },
+        "updatedAt": {
+          "type": "string",
+          "example": "DateTime"
+        }
+      }
+    },
+    "Event": {
+      "type": "object",
+      "properties": {
+        "id": {
+          "type": "string",
+          "example": "98ec6545-23d1-4d9e-a565-0c7452b45a8b"
+        },
+        "date": {
+          "type": "string",
+          "example": "DateTime"
+        },
+        "creatorId": {
+          "type": "string",
+          "example": "8cdebdfd-122c-4b03-af73-1009a621dfd4"
+        },
+        "description": {
+          "type": "string",
+          "example": "Text"
+        },
+        "isPublished": {
+          "type": "string",
+          "example": "true"
+        },
+        "code": {
+          "type": "string",
+          "example": "ABCDEFGH"
+        },
+        "createdAt": {
+          "type": "string",
+          "example": "DateTime"
+        },
+        "updatedAt": {
+          "type": "string",
+          "example": "DateTime"
+        }
+      }
+    },
+    "CreateEventDTO": {
+      "type": "object",
+      "properties": {
+        "date": {
+          "type": "string",
+          "example": "DateTime"
+        },
+        "description": {
+          "type": "string",
+          "example": "Text"
+        }
+      }
+    },
+    "CreateRequestDTO": {
+      "type": "object",
+      "properties": {
+        "text": {
+          "type": "string",
+          "example": "Texto"
+        }
+      }
+    },
+    "StoreRequest": {
+      "type": "object",
+      "properties": {
+        "id": {
+          "type": "string",
+          "example": "98ec6545-23d1-4d9e-a565-0c7452b45a8b"
+        },
+        "createdAt": {
+          "type": "string",
+          "example": "DateTime"
+        },
+        "userId": {
+          "type": "string",
+          "example": "8cdebdfd-122c-4b03-af73-1009a621dfd4"
+        },
+        "status": {
+          "type": "string",
+          "example": "Aprovado"
+        },
+        "text": {
+          "type": "string",
+          "example": "Texto"
+        }
+      }
+    },
+    "CreateUserDTO": {
+      "type": "object",
+      "properties": {
+        "email": {
+          "type": "string",
+          "example": "email@example.com"
+        },
+        "name": {
+          "type": "string",
+          "example": "Fulano de Tal"
+        },
+        "password": {
+          "type": "string",
+          "example": "SenhaForte"
+        },
+        "userTypeId": {
+          "type": "string",
+          "example": "7d1f6344-af5f-4cc3-bcc1-f0e3e35d4360"
+        }
+      }
+    }
+  }
+}

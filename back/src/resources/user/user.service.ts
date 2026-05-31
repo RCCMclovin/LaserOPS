@@ -1,5 +1,5 @@
 import { PrismaClient, User } from '../../generated/prisma/client';
-import { CreateUserDTO, UserDTO, UpdateUserDTO } from './user.types';
+import { CreateUserDTO, UserDTO } from './user.types';
 import { genSalt, hash } from 'bcryptjs';
 
 const prisma = new PrismaClient();
@@ -23,7 +23,7 @@ async function createUser(user: CreateUserDTO): Promise<User> {
   return prisma.user.create({ data: { ...user, password } });
 }
 
-async function updateUser(id: string, user: UpdateUserDTO): Promise<User> {
+async function updateUser(id: string, user: CreateUserDTO): Promise<User> {
   const salt = await genSalt();
   const password = await hash(user.password, salt);
   return prisma.user.update({
