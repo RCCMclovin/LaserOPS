@@ -1255,7 +1255,7 @@
         },
         "userTypeId": {
           "type": "string",
-          "example": "9cedc214-6eea-4ebd-9900-aeb25b1fb4a4"
+          "example": "Optional"
         }
       }
     },

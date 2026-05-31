@@ -101,7 +101,7 @@ const create = async (req: Request, res: Response) => {
 
   let code: string = generateRandomString(8);
   try{
-    while(!eventService.isCodeUnique(code)){
+    while(!(await eventService.isCodeUnique(code))){
         code = generateRandomString(8);
     }
   }catch (e) {
@@ -274,6 +274,8 @@ const read = async (req: Request, res: Response) => {
             // eslint-disable-next-line @typescript-eslint/no-unused-vars
             const {code, ...publicEvent} = event;
             return res.json(publicEvent);
+        }else{
+          return res.status(StatusCodes.NOT_ACCEPTABLE).send(ReasonPhrases.NOT_ACCEPTABLE);
         }
     }
     

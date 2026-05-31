@@ -1,5 +1,5 @@
 import { PrismaClient, User } from '../../generated/prisma/client';
-import { CreateUserDTO, UserDTO, UpdateUserDTO } from './user.types';
+import { CreateUserDTO, UserDTO, UpdateUserDTO, SafeUpdateUserDTO,SafeUserDTO } from './user.types';
 import { genSalt, hash } from 'bcryptjs';
 
 const prisma = new PrismaClient();
@@ -23,7 +23,7 @@ async function createUser(user: CreateUserDTO): Promise<User> {
   return prisma.user.create({ data: { ...user, password } });
 }
 
-async function updateUser(id: string, user: UpdateUserDTO | CreateUserDTO): Promise<User> {
+async function updateUser(id: string, user: UpdateUserDTO | CreateUserDTO | SafeUpdateUserDTO): Promise<User> {
   if("password" in user){
     const salt = await genSalt();
     const password = await hash(user.password, salt);
@@ -45,7 +45,15 @@ async function removeUser(id: string): Promise<User> {
   });
 }
 
-async function readUser(id: string): Promise<UserDTO> {
+async function readUser(id: string): Promise<SafeUserDTO> {
+  // eslint-disable-next-line @typescript-eslint/no-unused-vars
+  const { password, userTypeId, ...user } = (await prisma.user.findUnique({
+    where: { id },
+  })) as User;
+  return user;
+}
+
+async function readUserWithRole(id: string): Promise<UserDTO> {
   // eslint-disable-next-line @typescript-eslint/no-unused-vars
   const { password, ...user } = (await prisma.user.findUnique({
     where: { id },
@@ -65,4 +73,5 @@ export default {
   removeUser,
   readUser,
   checkEmail,
+  readUserWithRole,
 };

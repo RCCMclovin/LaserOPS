@@ -79,7 +79,7 @@ const doc = {
         email: "email@example.com",
         name: "Fulano de Tal",
         password: "Optional", 
-        userTypeId: "9cedc214-6eea-4ebd-9900-aeb25b1fb4a4"
+        userTypeId: "Optional"
     },
     RoleDTO: {
       name: "Fulano de Tal",

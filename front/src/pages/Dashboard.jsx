@@ -23,6 +23,8 @@ function Dashboard() {
 
       } catch (error) {
         console.error("Erro ao validar sessão:", error);
+        setCarregando(false);
+        navigate('/');
       }
     };
     if(!userName) verificarUsuarioLogado();

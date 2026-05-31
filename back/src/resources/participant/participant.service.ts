@@ -7,11 +7,11 @@ async function getAllParticipants(): Promise<Participant[]> {
   return participants;
 }
 async function getAllPlayers(): Promise<Participant[]>{
-  const participants = await prisma.participant.findMany({where:{role:"player"}});
+  const participants = await prisma.participant.findMany({where:{role:"Player"}});
   return participants;
 }
 async function getAllSpectator(): Promise<Participant[]>{
-  const participants = await prisma.participant.findMany({where:{role:"spectator"}});
+  const participants = await prisma.participant.findMany({where:{role:"Spectator"}});
   return participants;
 }
 async function remove(userId:string, eventId: string): Promise<Participant> {

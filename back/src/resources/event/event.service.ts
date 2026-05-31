@@ -40,7 +40,7 @@ async function read(id: string): Promise<Event | null>{
 
 async function isCodeUnique(code: string):Promise<boolean>{
     const exists = !!(await prisma.event.findUnique({where:{code}}));
-    return exists;
+    return !exists;
 }
 
 export default{

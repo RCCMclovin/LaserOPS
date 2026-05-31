@@ -1,6 +1,6 @@
 import { Request, Response } from 'express';
 import userService from './user.service';
-import { CreateUserDTO, UpdateUserDTO} from './user.types';
+import { CreateUserDTO, UpdateUserDTO, SafeUpdateUserDTO} from './user.types';
 import { ReasonPhrases, StatusCodes } from 'http-status-codes';
 import { UserTypes } from '../userType/userType.consts';
 
@@ -88,10 +88,21 @@ const update = async (req: Request, res: Response) => {
  }
 */
   try {
-    const user = req.body as CreateUserDTO | UpdateUserDTO;
+    const user = req.body as CreateUserDTO | UpdateUserDTO | SafeUpdateUserDTO;
     if (await userService.readUser(req.params.userId as string)) {
-      const newUser = await userService.updateUser(req.params.userId as string, user);
-      return res.json(newUser);
+      if(req.session.utid !== UserTypes.admin && "userTypeId" in user){
+        // eslint-disable-next-line @typescript-eslint/no-unused-vars
+        const {userTypeId, ...new_data} = user;
+        const newUser = await userService.updateUser(
+          req.params.userId as string, 
+          new_data as SafeUpdateUserDTO
+        );
+        return res.json(newUser);
+      }else{
+        const newUser = await userService.updateUser(req.params.userId as string, user);
+        return res.json(newUser);
+      }
+      
     } else {
       return res.status(StatusCodes.NOT_ACCEPTABLE).send(ReasonPhrases.NOT_ACCEPTABLE);
     }
@@ -181,7 +192,7 @@ const checkRole = async (req: Request, res: Response) => {
  }
 */
   try {
-    const user = await userService.readUser(req.session.uid as string);
+    const user = await userService.readUserWithRole(req.session.uid as string);
 
     if (!user) {
         return res.status(StatusCodes.NOT_FOUND).json({ mensagem: "Usuário não encontrado." });

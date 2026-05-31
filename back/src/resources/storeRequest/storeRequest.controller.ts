@@ -85,7 +85,7 @@ const create = async (req: Request, res: Response) => {
 
   try {
     const requests = await storeRequestService.getAllRequestsFromUser(request.userId);
-    const hasNotPending = !!(requests.filter((r) => r.status == "Pending"));
+    const hasNotPending: boolean = requests.some((r) => r.status == "Pending");
     if (hasNotPending) {
       const new_request = await storeRequestService.create(request);
       return res.json(new_request);
@@ -185,8 +185,7 @@ const acceptRequest = async (req: Request, res: Response) => {
       if(!user){
         return res.sendStatus(StatusCodes.NOT_FOUND).send(ReasonPhrases.NOT_FOUND);
       }else{
-        user.userTypeId = UserTypes.store;
-        const new_info: UpdateUserDTO = {name: user.name, email:user.email, userTypeId: user.userTypeId};
+        const new_info: UpdateUserDTO = {name: user.name, email:user.email, userTypeId: UserTypes.store};
         await userService.updateUser(user.id, new_info);
         const new_request: RequestDTO = {text: request.text, userId: request.userId, status:request.status};
         await storeRequestService.update(request.id, new_request);

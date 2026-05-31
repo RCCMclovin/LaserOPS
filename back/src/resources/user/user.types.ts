@@ -10,4 +10,11 @@ export type UpdateUserDTO = Pick<
   'name' | 'email' | 'userTypeId'
 >;
 
+export type SafeUpdateUserDTO = Pick<
+  User,
+  'name' | 'email' | 'password' 
+>;
+
 export type UserDTO = Omit<User, 'password'>;
+
+export type SafeUserDTO = Omit<User, 'password' | 'userTypeId'>;
