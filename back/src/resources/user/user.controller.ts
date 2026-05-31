@@ -164,35 +164,37 @@ const checkEmail = async (req: Request, res: Response) => {
 };
 
 const checkRole = async (req: Request, res: Response) => {
-  /*
- #swagger.tags = ["Usuários"]
- #swagger.summary = 'Retorna o nome e tipo do usuário logado.'
- #swagger.responses[200] = {
- schema: { $ref: '#/definitions/UserRoleDTO' }
- }
- #swagger.responses[500] = {
- description: "Internal Server Error"
- }
-*/
   try {
+    // 1. PROTEÇÃO CRÍTICA: Se não houver sessão ou uid, responde 401 e para aqui (com return)!
+    if (!req.session || !req.session.uid) {
+        return res.status(StatusCodes.UNAUTHORIZED).json({ mensagem: "Sessão expirada ou inválida." });
+    }
+
+    // 2. Agora é seguro chamar o banco, pois sabemos que o uid existe
     const user = await userService.readUser(req.session.uid as string);
-    if(user.userTypeId == UserTypes.admin){
-        res.json({name:user.name, role: "admin"}).send();
-        return;
+
+    // Se o banco não achar o usuário por algum motivo
+    if (!user) {
+        return res.status(StatusCodes.NOT_FOUND).json({ mensagem: "Usuário não encontrado." });
     }
-    if(user.userTypeId == UserTypes.client){
-        res.json({name:user.name, role: "client"}).send();
-        return;
+
+    // 3. Checagem dos tipos (apenas com .json() e com return na mesma linha)
+    if (user.userTypeId === UserTypes.admin) {
+        return res.json({ name: user.name, role: "admin" });
     }
-    if(user.userTypeId == UserTypes.store){
-        res.json({name:user.name, role: "store"}).send();
-        return;
-    }else{
-        res.status(StatusCodes.INTERNAL_SERVER_ERROR).send(ReasonPhrases.INTERNAL_SERVER_ERROR);
+    if (user.userTypeId === UserTypes.client) {
+        return res.json({ name: user.name, role: "client" });
     }
+    if (user.userTypeId === UserTypes.store) {
+        return res.json({ name: user.name, role: "store" });
+    }
+
+    return res.status(StatusCodes.INTERNAL_SERVER_ERROR).json({ mensagem: "Tipo de usuário inválido." });
     
   } catch (e) {
-    res.status(StatusCodes.INTERNAL_SERVER_ERROR).json(e);
+    console.error("Erro interno no checkRole:", e); // Mostra o erro no terminal dele de forma segura
+    // 4. Responde com uma mensagem simples para não crashar o Express com o objeto 'e' cru
+    return res.status(StatusCodes.INTERNAL_SERVER_ERROR).json({ mensagem: "Erro interno no servidor." });
   }
 };
 
