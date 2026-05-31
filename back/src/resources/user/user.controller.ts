@@ -165,20 +165,12 @@ const checkEmail = async (req: Request, res: Response) => {
 
 const checkRole = async (req: Request, res: Response) => {
   try {
-    // 1. PROTEÇÃO CRÍTICA: Se não houver sessão ou uid, responde 401 e para aqui (com return)!
-    if (!req.session || !req.session.uid) {
-        return res.status(StatusCodes.UNAUTHORIZED).json({ mensagem: "Sessão expirada ou inválida." });
-    }
-
-    // 2. Agora é seguro chamar o banco, pois sabemos que o uid existe
     const user = await userService.readUser(req.session.uid as string);
 
-    // Se o banco não achar o usuário por algum motivo
     if (!user) {
         return res.status(StatusCodes.NOT_FOUND).json({ mensagem: "Usuário não encontrado." });
     }
 
-    // 3. Checagem dos tipos (apenas com .json() e com return na mesma linha)
     if (user.userTypeId === UserTypes.admin) {
         return res.json({ name: user.name, role: "admin" });
     }
@@ -192,8 +184,7 @@ const checkRole = async (req: Request, res: Response) => {
     return res.status(StatusCodes.INTERNAL_SERVER_ERROR).json({ mensagem: "Tipo de usuário inválido." });
     
   } catch (e) {
-    console.error("Erro interno no checkRole:", e); // Mostra o erro no terminal dele de forma segura
-    // 4. Responde com uma mensagem simples para não crashar o Express com o objeto 'e' cru
+    console.error("Erro interno no checkRole:", e); 
     return res.status(StatusCodes.INTERNAL_SERVER_ERROR).json({ mensagem: "Erro interno no servidor." });
   }
 };
