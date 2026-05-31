@@ -11,7 +11,7 @@ const index = async (req: Request, res: Response) => {
  #swagger.tags = ["StoreRequests"]
  #swagger.summary = 'Recupera dados de todos os pedidos para ser logista.'
  #swagger.responses[200] = {
- schema: [{ $ref: '#/definitions/StoreRequest' }]
+ schema: [{ $ref: '#/definitions/StoreRequestWithUser' }]
  }
  #swagger.responses[403] = {
  description: 'User unautorized.'
@@ -33,7 +33,7 @@ const indexFromUser = async (req: Request, res: Response) => {
  #swagger.summary = 'Recupera dados de todos os pedidos de um usuário para ser logista.'
  #swagger.parameters['userId'] = { description: 'ID do usuário' }
  #swagger.responses[200] = {
- schema: [{ $ref: '#/definitions/StoreRequest' }]
+ schema: [{ $ref: '#/definitions/StoreRequestWithUser' }]
  }
  #swagger.responses[403] = {
  description: 'User unautorized.'

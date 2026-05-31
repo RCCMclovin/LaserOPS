@@ -1,80 +1,90 @@
 import React, { useState } from 'react';
-import axios from 'axios';
-import { useNavigate } from 'react-router-dom';
+import { Link, useNavigate } from 'react-router-dom';
+import BrandLogo from '../components/BrandLogo';
+import { api, getApiError } from '../services/api';
 
 function Login() {
-  const navigate = useNavigate(); //Inicializa o redirecionador
-
-  // States  
+  const navigate = useNavigate();
   const [email, setEmail] = useState('');
   const [senha, setSenha] = useState('');
   const [erro, setErro] = useState('');
+  const [carregando, setCarregando] = useState(false);
 
   const handleLogin = async (e) => {
-    e.preventDefault(); // Impede a página de recarregar
+    e.preventDefault();
     setErro('');
+    setCarregando(true);
 
     try {
-      // 1. Envia dados para Back-end (Checar porta)
-      const resposta = await axios.post('http://localhost:3334/v1/auth/login', {
-        email: email,
-        password: senha
-      },{
-        withCredentials: true
+      await api.post('/auth/login', {
+        email,
+        password: senha,
       });
-      
       navigate('/dashboard');
-
     } catch (error) {
-      // Caso o back-end retorne erro (senha errada, usuário não existe)
-      setErro(error.response?.data?.mensagem || 'Erro ao tentar fazer login.');
+      setErro(getApiError(error, 'E-mail ou senha inválidos.'));
+    } finally {
+      setCarregando(false);
     }
   };
 
   return (
-    <div style={{ maxWidth: '400px', margin: '50px auto', padding: '20px', border: '1px solid #ccc' }}>
-      <h2>Acessar LaserOPS</h2>
-      
-      {erro && <p style={{ color: 'red' }}>{erro}</p>}
+    <main className="auth-page">
+      <section className="auth-card" aria-labelledby="login-title">
+        <BrandLogo />
 
-      <form onSubmit={handleLogin}>
-        <div style={{ marginBottom: '10px' }}>
-          <label>E-mail:</label>
-          <input 
-            type="email" 
-            value={email} 
-            onChange={(e) => setEmail(e.target.value)} 
-            required 
-            style={{ width: '100%', padding: '8px', marginTop: '5px' }}
-          />
+        <div className="auth-copy">
+          <p className="eyebrow">Acesso seguro</p>
+          <h1 id="login-title">Entrar na arena</h1>
+          <p className="muted">
+            Faça login para participar, organizar partidas ou administrar o LaserOps.
+          </p>
         </div>
 
-        <div style={{ marginBottom: '15px' }}>
-          <label>Senha:</label>
-          <input 
-            type="password" 
-            value={senha} 
-            onChange={(e) => setSenha(e.target.value)} 
-            required 
-            style={{ width: '100%', padding: '8px', marginTop: '5px' }}
-          />
+        {erro && <div className="alert alert-error">{erro}</div>}
+
+        <form className="form-stack" onSubmit={handleLogin}>
+          <label>
+            <span>E-mail</span>
+            <input
+              type="email"
+              value={email}
+              onChange={(e) => setEmail(e.target.value)}
+              placeholder="voce@email.com"
+              autoComplete="email"
+              required
+            />
+          </label>
+
+          <label>
+            <span>Senha</span>
+            <input
+              type="password"
+              value={senha}
+              onChange={(e) => setSenha(e.target.value)}
+              placeholder="Sua senha"
+              autoComplete="current-password"
+              required
+            />
+          </label>
+
+          <button className="btn btn-primary" type="submit" disabled={carregando}>
+            {carregando ? 'Entrando...' : 'Entrar'}
+          </button>
+        </form>
+
+        <div className="auth-footer">
+          <span>Novo no jogo?</span>
+          <Link to="/signup">Criar conta</Link>
         </div>
+      </section>
 
-        <button type="submit" style={{ width: '100%', padding: '10px', backgroundColor: '#007bff', color: 'white', border: 'none' }}>
-          Entrar
-        </button>
-      </form>
-
-      <div style={{ marginTop: '20px', textAlign: 'center', borderTop: '1px solid #eee', paddingTop: '15px' }}>
-        <p style={{ margin: '0 0 10px 0', fontSize: '14px', color: '#666' }}>Novo na arena?</p>
-        <button 
-          onClick={() => navigate('/signup')} 
-          style={{ width: '100%', padding: '10px', backgroundColor: '#6c757d', color: 'white', border: 'none', borderRadius: '4px', fontWeight: 'bold', cursor: 'pointer' }}
-        >
-          Criar uma Conta
-        </button>
-      </div>
-    </div>
+      <aside className="auth-notes" aria-label="Resumo do sistema">
+        <span>participantes</span>
+        <span>organizadores</span>
+        <span>administração</span>
+      </aside>
+    </main>
   );
 }
 

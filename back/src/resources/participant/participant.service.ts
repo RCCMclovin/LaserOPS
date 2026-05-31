@@ -27,6 +27,13 @@ async function read(userId:string, eventId: string): Promise<Participant | null>
   return participant;
 }
 
+async function getParticipantsFromUser(userId: string): Promise<Participant[]> {
+  const participants = await prisma.participant.findMany({
+    where: { userId },
+  });
+  return participants;
+}
+
 export default{
     getAllParticipants,
     getAllPlayers,
@@ -34,4 +41,5 @@ export default{
     remove,
     create,
     read,
+    getParticipantsFromUser,
 }

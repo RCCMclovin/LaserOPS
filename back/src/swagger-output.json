@@ -325,7 +325,7 @@
             "schema": {
               "type": "array",
               "items": {
-                "$ref": "#/definitions/StoreRequest"
+                "$ref": "#/definitions/StoreRequestWithUser"
               },
               "xml": {
                 "name": "main"
@@ -393,7 +393,7 @@
             "schema": {
               "type": "array",
               "items": {
-                "$ref": "#/definitions/StoreRequest"
+                "$ref": "#/definitions/StoreRequestWithUser"
               },
               "xml": {
                 "name": "main"
@@ -641,6 +641,29 @@
         }
       }
     },
+    "/v1/event/read/{eventId}": {
+      "get": {
+        "tags": [
+          "Eventos"
+        ],
+        "summary": "Recupera dados de um evento específico.",
+        "description": "",
+        "parameters": [
+          {
+            "name": "eventId",
+            "in": "path",
+            "required": true,
+            "type": "string",
+            "description": "ID do evento"
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "OK"
+          }
+        }
+      }
+    },
     "/v1/event/{userId}": {
       "get": {
         "tags": [
@@ -754,29 +777,6 @@
         }
       }
     },
-    "/v1/event/read/{eventId}": {
-      "get": {
-        "tags": [
-          "Eventos"
-        ],
-        "summary": "Recupera dados de um evento específico.",
-        "description": "",
-        "parameters": [
-          {
-            "name": "eventId",
-            "in": "path",
-            "required": true,
-            "type": "string",
-            "description": "ID do evento"
-          }
-        ],
-        "responses": {
-          "200": {
-            "description": "OK"
-          }
-        }
-      }
-    },
     "/v1/participant/": {
       "get": {
         "tags": [
@@ -860,6 +860,35 @@
           },
           "500": {
             "description": "Internal Server Error"
+          }
+        }
+      }
+    },
+    "/v1/participant/me": {
+      "get": {
+        "tags": [
+          "Participante"
+        ],
+        "summary": "Retorna todas as participações do usuário.",
+        "description": "",
+        "responses": {
+          "200": {
+            "description": "OK",
+            "schema": {
+              "type": "array",
+              "items": {
+                "$ref": "#/definitions/Participant"
+              },
+              "xml": {
+                "name": "main"
+              }
+            }
+          },
+          "401": {
+            "description": "User unauthenticated."
+          },
+          "500": {
+            "description": "Internal Server Error."
           }
         }
       }
@@ -1133,6 +1162,19 @@
         "updatedAt": {
           "type": "string",
           "example": "DateTime"
+        },
+        "crator": {
+          "type": "object",
+          "properties": {
+            "id": {
+              "type": "string",
+              "example": "8cdebdfd-122c-4b03-af73-1009a621dfd4"
+            },
+            "name": {
+              "type": "string",
+              "example": "Fulano de Tal"
+            }
+          }
         }
       }
     },
@@ -1217,6 +1259,48 @@
         "text": {
           "type": "string",
           "example": "Texto"
+        }
+      }
+    },
+    "StoreRequestWithUser": {
+      "type": "object",
+      "properties": {
+        "id": {
+          "type": "string",
+          "example": "98ec6545-23d1-4d9e-a565-0c7452b45a8b"
+        },
+        "createdAt": {
+          "type": "string",
+          "example": "DateTime"
+        },
+        "userId": {
+          "type": "string",
+          "example": "8cdebdfd-122c-4b03-af73-1009a621dfd4"
+        },
+        "status": {
+          "type": "string",
+          "example": "Aprovado"
+        },
+        "text": {
+          "type": "string",
+          "example": "Texto"
+        },
+        "user": {
+          "type": "object",
+          "properties": {
+            "id": {
+              "type": "string",
+              "example": "8cdebdfd-122c-4b03-af73-1009a621dfd4"
+            },
+            "name": {
+              "type": "string",
+              "example": "Fulano de Tal"
+            },
+            "email": {
+              "type": "string",
+              "example": "email@example.com"
+            }
+          }
         }
       }
     },

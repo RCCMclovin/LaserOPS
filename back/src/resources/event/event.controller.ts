@@ -1,10 +1,16 @@
 import { Request, Response } from 'express';
 import eventService from './event.service';
-import { CreateEventDTO, EventDTO, EventPublic} from './event.types';
+import { CreateEventDTO, EventDTO, EventPublic, EventWithCreator} from './event.types';
 import {Event} from '../../generated/prisma/client';
 import { ReasonPhrases, StatusCodes } from 'http-status-codes';
 import {generateRandomString} from '../../utils/keyGen';
 import { UserTypes } from '../userType/userType.consts';
+
+function toPublicEvent(event: Event | EventWithCreator): EventPublic {
+  // eslint-disable-next-line @typescript-eslint/no-unused-vars
+  const { code, ...publicEvent } = event;
+  return publicEvent;
+}
 
 const index = async (req: Request, res: Response) => {
   /*
@@ -21,14 +27,8 @@ const index = async (req: Request, res: Response) => {
  }
 */
   try {
-    const events = await eventService.getAllEvents();
-    const eventsPublic: EventPublic[] = [];
-    events.forEach((e) => {
-        // eslint-disable-next-line @typescript-eslint/no-unused-vars
-        const {code, ...tmp} = e;
-        eventsPublic.push(tmp);
-    })
-    return res.json(eventsPublic);
+    const events = await eventService.getAllEvents();      
+      return res.json(events.map(toPublicEvent));
   } catch (e) {
     return res.status(500).json(e);
   }
@@ -49,28 +49,18 @@ const indexFromUser = async (req: Request, res: Response) => {
  }
 */
   try {
-    if(req.session.uid && req.session.uid === req.params.userId || req.session.utid === UserTypes.admin){
-      const events = await eventService.getAllEventsFromUser(req.params.userId as string, null);
-      const eventsPublic: EventPublic[] = [];
-      events.forEach((e) => {
-        // eslint-disable-next-line @typescript-eslint/no-unused-vars
-        const {code, ...tmp} = e;
-        eventsPublic.push(tmp);
-      })
-      return res.json(eventsPublic);
-    }else{
-      const events = await eventService.getAllEventsFromUser(req.params.userId as string, true);
-      const eventsPublic: EventPublic[] = [];
-      events.forEach((e) => {
-        // eslint-disable-next-line @typescript-eslint/no-unused-vars
-        const {code, ...tmp} = e;
-        eventsPublic.push(tmp);
-      })
-      return res.json(eventsPublic);
-    }
-    
+    const isOwnerOrAdmin =
+      req.session.uid && (req.session.uid === req.params.userId ||
+      req.session.utid === UserTypes.admin);
+
+    const events = await eventService.getAllEventsFromUser(
+      req.params.userId as string,
+      isOwnerOrAdmin ? null : true,
+    );
+
+    return res.json(isOwnerOrAdmin ? events : events.map(toPublicEvent));
   } catch (e) {
-    return res.status(500).json(e);
+    return res.status(StatusCodes.INTERNAL_SERVER_ERROR).json(e);
   }
 };
 const create = async (req: Request, res: Response) => {
@@ -143,11 +133,17 @@ const remove = async (req: Request, res: Response) => {
 */
   try {
     const event = await eventService.read(req.params.eventId as string);
-    if(req.session.utid != UserTypes.admin && req.session.uid != event?.creatorId){
-    return res.status(StatusCodes.FORBIDDEN).send(ReasonPhrases.FORBIDDEN);
+
+    if (!event) {
+      return res.status(StatusCodes.NOT_FOUND).send(ReasonPhrases.NOT_FOUND);
     }
+
+    if (req.session.utid !== UserTypes.admin && req.session.uid !== event.creatorId) {
+      return res.status(StatusCodes.FORBIDDEN).send(ReasonPhrases.FORBIDDEN);
+    }
+
     await eventService.remove(req.params.eventId as string);
-    return res.status(StatusCodes.NO_CONTENT).send(ReasonPhrases.NO_CONTENT);
+    return res.status(StatusCodes.NO_CONTENT).send();
   } catch (e) {
     return res.status(StatusCodes.INTERNAL_SERVER_ERROR).json(e);
   }
@@ -179,19 +175,23 @@ const update = async (req: Request, res: Response) => {
 */
   try {
     const event = await eventService.read(req.params.eventId as string);
-    if(!event){
-        return res.status(StatusCodes.NOT_ACCEPTABLE).send(ReasonPhrases.NOT_ACCEPTABLE);
+
+    if (!event) {
+      return res.status(StatusCodes.NOT_FOUND).send(ReasonPhrases.NOT_FOUND);
     }
-    if(req.session.utid != UserTypes.admin && req.session.uid != event?.creatorId){
+
+    if (req.session.utid !== UserTypes.admin && req.session.uid !== event.creatorId) {
       return res.status(StatusCodes.FORBIDDEN).send(ReasonPhrases.FORBIDDEN);
     }
-    const body = req.body as CreateEventDTO;
+
+    const body = req.body as EventDTO;
+
     const new_event = {
-    date: new Date(body.date),
-    description: body.description, 
-    creatorId:event?.creatorId, 
-    code: event?.code,
-    isPublished: event?.isPublished,
+      date: new Date(body.date),
+      description: body.description,
+      creatorId: event.creatorId,
+      code: event.code,
+      isPublished: event.isPublished,
     } as EventDTO;
 
     const newEvent = await eventService.update(req.params.eventId as string, new_event);

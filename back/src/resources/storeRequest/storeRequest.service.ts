@@ -1,15 +1,26 @@
 import { PrismaClient, StoreRequest } from '../../generated/prisma/client';
 import { RequestDTO } from './storeRequest.types';
 
+const userSelect = {
+  id: true,
+  name: true,
+  email: true,
+};
+
 const prisma = new PrismaClient();
 
 async function getAllRequests(): Promise<StoreRequest[]> {
-  const requests = await prisma.storeRequest.findMany();
+  const requests = await prisma.storeRequest.findMany({
+    include: { user: { select: userSelect } },
+    orderBy: { createdAt: 'desc' }});
   return requests;
 }
 
 async function getAllRequestsFromUser(userId: string): Promise<StoreRequest[]> {
-  const requests = await prisma.storeRequest.findMany({ where: { userId } });
+  const requests = await prisma.storeRequest.findMany({ 
+    include: { user: { select: userSelect } }, 
+    where: { userId },
+    orderBy: { createdAt: 'desc' }});
   return requests;
 }
 

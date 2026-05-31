@@ -43,7 +43,11 @@ const doc = {
         description: "Text",
         isPublished: "true",
         createdAt: "DateTime",
-        updatedAt: "DateTime"
+        updatedAt: "DateTime",
+        crator:{
+          id: "8cdebdfd-122c-4b03-af73-1009a621dfd4",
+          name: "Fulano de Tal"
+        }
     },
     Event:{
         id: '98ec6545-23d1-4d9e-a565-0c7452b45a8b',
@@ -68,6 +72,18 @@ const doc = {
         userId: "8cdebdfd-122c-4b03-af73-1009a621dfd4",
         status: "Aprovado",
         text: "Texto"
+    },
+    StoreRequestWithUser:{
+        id: '98ec6545-23d1-4d9e-a565-0c7452b45a8b',
+        createdAt: "DateTime",
+        userId: "8cdebdfd-122c-4b03-af73-1009a621dfd4",
+        status: "Aprovado",
+        text: "Texto",
+        user:{
+          id: "8cdebdfd-122c-4b03-af73-1009a621dfd4",
+          name: "Fulano de Tal",
+          email: "email@example.com"
+        }
     },
     CreateUserDTO: {
         email: "email@example.com",

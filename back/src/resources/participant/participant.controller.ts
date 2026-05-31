@@ -164,7 +164,7 @@ const createAsPlayer = async (req: Request, res: Response) => {
     if(event?.code != req.params.code){ 
         return res.status(StatusCodes.UNAUTHORIZED).send(ReasonPhrases.UNAUTHORIZED);
     }
-    const isParticipant: boolean = !!(participantService.read(req.session.uid as string, event.id));
+    const isParticipant: boolean = !!(await participantService.read(req.session.uid as string, event.id));
     if(isParticipant){
       return res.status(StatusCodes.CONFLICT).send(ReasonPhrases.CONFLICT);
     } 
@@ -205,7 +205,7 @@ const createAsSpectator = async (req: Request, res: Response) => {
     if(!event){
         return res.status(StatusCodes.NOT_ACCEPTABLE).send(ReasonPhrases.NOT_ACCEPTABLE);
     }
-    const isParticipant: boolean = !!(participantService.read(req.session.uid as string, event.id));
+    const isParticipant: boolean = !!(await participantService.read(req.session.uid as string, event.id));
     if(isParticipant){
       return res.status(StatusCodes.CONFLICT).send(ReasonPhrases.CONFLICT);
     } 
@@ -213,6 +213,28 @@ const createAsSpectator = async (req: Request, res: Response) => {
     return res.status(StatusCodes.OK).send(ReasonPhrases.OK);
   } catch (e) {
     return res.status(StatusCodes.INTERNAL_SERVER_ERROR).send(e);
+  }
+};
+
+const mine = async (req: Request, res: Response) => {
+    /*
+ #swagger.tags = ["Participante"]
+ #swagger.summary = 'Retorna todas as participações do usuário.'
+ #swagger.responses[200] = {
+ schema: [{ $ref: '#/definitions/Participant' }]
+ }
+ #swagger.responses[401] = {
+ description: 'User unauthenticated.'
+ }
+ #swagger.responses[500] = {
+ description: "Internal Server Error."
+ }
+*/
+  try {
+    const participants = await participantService.getParticipantsFromUser(req.session.uid as string);
+    return res.json(participants);
+  } catch (e) {
+    return res.status(StatusCodes.INTERNAL_SERVER_ERROR).json(e);
   }
 };
 
@@ -224,4 +246,5 @@ export default{
     remove,
     createAsPlayer,
     createAsSpectator,
+    mine,
 }

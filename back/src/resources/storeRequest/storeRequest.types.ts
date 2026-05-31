@@ -5,3 +5,9 @@ export interface CreateRequestDTO{
 }
 
 export type RequestDTO = Omit<StoreRequest, 'id' | 'createdAt'>
+
+export type RequestWithUser = StoreRequest & {user: {
+    id: string;
+    name: string;
+    email: string;
+}}
