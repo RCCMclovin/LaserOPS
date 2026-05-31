@@ -145,6 +145,9 @@ const createAsPlayer = async (req: Request, res: Response) => {
  #swagger.responses[406] = {
  description:  'Não existe um evento com o id informado.'
  }
+ #swagger.responses[409] = {
+ description:  'Usuário já é participante.'
+ }
  #swagger.responses[422] = {
  description:  'Body inválido.'
  }
@@ -161,6 +164,10 @@ const createAsPlayer = async (req: Request, res: Response) => {
     if(event?.code != req.params.code){ 
         return res.status(StatusCodes.UNAUTHORIZED).send(ReasonPhrases.UNAUTHORIZED);
     }
+    const isParticipant: boolean = !!(participantService.read(req.session.uid as string, event.id));
+    if(isParticipant){
+      return res.status(StatusCodes.CONFLICT).send(ReasonPhrases.CONFLICT);
+    } 
     await participantService.create(req.session.uid as string, req.params.eventId as string, "Player");
     return res.status(StatusCodes.OK).send(ReasonPhrases.OK);
   } catch (e) {
@@ -182,6 +189,9 @@ const createAsSpectator = async (req: Request, res: Response) => {
  #swagger.responses[406] = {
  description:  'Não existe um evento com o id informado.'
  }
+ #swagger.responses[409] = {
+ description:  'Usuário já é participante.'
+ }
  #swagger.responses[422] = {
  description:  'Body inválido.'
  }
@@ -195,6 +205,10 @@ const createAsSpectator = async (req: Request, res: Response) => {
     if(!event){
         return res.status(StatusCodes.NOT_ACCEPTABLE).send(ReasonPhrases.NOT_ACCEPTABLE);
     }
+    const isParticipant: boolean = !!(participantService.read(req.session.uid as string, event.id));
+    if(isParticipant){
+      return res.status(StatusCodes.CONFLICT).send(ReasonPhrases.CONFLICT);
+    } 
     await participantService.create(req.session.uid as string, req.params.eventId as string, "Spectator");
     return res.status(StatusCodes.OK).send(ReasonPhrases.OK);
   } catch (e) {

@@ -22,6 +22,10 @@ async function create(userId:string, eventId: string, role:string): Promise<Part
     const participant = await prisma.participant.create({data:{userId, eventId, role}});
     return participant;
 }
+async function read(userId:string, eventId: string): Promise<Participant | null> {
+  const participant = await prisma.participant.findUnique({where:{userId_eventId: {userId, eventId}}});
+  return participant;
+}
 
 export default{
     getAllParticipants,
@@ -29,4 +33,5 @@ export default{
     getAllSpectator,
     remove,
     create,
+    read,
 }

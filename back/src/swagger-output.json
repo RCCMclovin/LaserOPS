@@ -29,10 +29,7 @@
         ],
         "responses": {
           "201": {
-            "schema": {
-              "$ref": "#/definitions/UserDTO"
-            },
-            "description": "Created"
+            "description": "New user created"
           },
           "400": {
             "description": "Email informado já está sendo usado."
@@ -932,6 +929,9 @@
           "406": {
             "description": "Não existe um evento com o id informado."
           },
+          "409": {
+            "description": "Usuário já é participante."
+          },
           "422": {
             "description": "Body inválido."
           },
@@ -1003,6 +1003,9 @@
           },
           "406": {
             "description": "Não existe um evento com o id informado."
+          },
+          "409": {
+            "description": "Usuário já é participante."
           },
           "422": {
             "description": "Body inválido."

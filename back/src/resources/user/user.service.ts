@@ -45,19 +45,23 @@ async function removeUser(id: string): Promise<User> {
   });
 }
 
-async function readUser(id: string): Promise<SafeUserDTO> {
-  // eslint-disable-next-line @typescript-eslint/no-unused-vars
-  const { password, userTypeId, ...user } = (await prisma.user.findUnique({
+async function readUser(id: string): Promise<SafeUserDTO | null> {
+  const found = (await prisma.user.findUnique({
     where: { id },
   })) as User;
+  if(!found) return null
+  // eslint-disable-next-line @typescript-eslint/no-unused-vars
+  const { password, userTypeId, ...user } = found;
   return user;
 }
 
-async function readUserWithRole(id: string): Promise<UserDTO> {
-  // eslint-disable-next-line @typescript-eslint/no-unused-vars
-  const { password, ...user } = (await prisma.user.findUnique({
+async function readUserWithRole(id: string): Promise<UserDTO | null> {
+  const found = (await prisma.user.findUnique({
     where: { id },
   })) as User;
+  if(!found) return null
+  // eslint-disable-next-line @typescript-eslint/no-unused-vars
+  const { password, ...user } = found;
   return user;
 }
 

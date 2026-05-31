@@ -67,12 +67,14 @@ const logout = (req: Request, res: Response) => {
     return res.status(StatusCodes.UNAUTHORIZED).send(ReasonPhrases.UNAUTHORIZED);
   else {
     req.session.destroy((err) => {
-      if (err)
-        res
+      if (err) {
+        return res
           .status(StatusCodes.INTERNAL_SERVER_ERROR)
           .send(ReasonPhrases.INTERNAL_SERVER_ERROR);
+      }
+      res.clearCookie('connect.sid');
+      return res.status(StatusCodes.OK).send(ReasonPhrases.OK);
     });
-    return res.status(StatusCodes.OK).send(ReasonPhrases.OK);
   }
 };
 
@@ -87,7 +89,7 @@ const signUp = async (req: Request, res: Response) => {
  schema: { $ref: '#/definitions/SignUpDto' }
  } 
 #swagger.responses[201] = {
- schema: { $ref: '#/definitions/UserDTO' }
+ description: 'New user created'
  }
  #swagger.responses[400] = {
  description:  'Email informado já está sendo usado.'
@@ -110,7 +112,16 @@ const signUp = async (req: Request, res: Response) => {
       const { password, ...newUsuario } = await userService.createUser(usuario);
       req.session.uid = newUsuario.id;
       req.session.utid = newUsuario.userTypeId;
-      return res.status(StatusCodes.CREATED).send(newUsuario);
+      req.session.save((err) => {
+      if (err) {
+        console.error('Erro ao salvar a sessão:', err);
+        return res
+          .status(StatusCodes.INTERNAL_SERVER_ERROR)
+          .send('Erro ao salvar sessão');
+      }
+      return res.status(StatusCodes.CREATED).send(ReasonPhrases.CREATED);
+    });
+      
     }
     // eslint-disable-next-line @typescript-eslint/no-explicit-any
   } catch (e: any) {
