@@ -177,13 +177,16 @@ const checkRole = async (req: Request, res: Response) => {
   try {
     const user = await userService.readUser(req.session.uid as string);
     if(user.userTypeId == UserTypes.admin){
-        res.json({name:user.name, role: "admin"});
+        res.json({name:user.name, role: "admin"}).send();
+        return;
     }
     if(user.userTypeId == UserTypes.client){
-        res.json({name:user.name, role: "client"});
+        res.json({name:user.name, role: "client"}).send();
+        return;
     }
     if(user.userTypeId == UserTypes.store){
-        res.json({name:user.name, role: "store"});
+        res.json({name:user.name, role: "store"}).send();
+        return;
     }
     res.status(StatusCodes.INTERNAL_SERVER_ERROR).send(ReasonPhrases.INTERNAL_SERVER_ERROR);
   } catch (e) {
