@@ -15,7 +15,7 @@ function Login() {
       // 1. Envia dados para Back-end (Checar porta)
       const resposta = await axios.post('http://localhost:3334/v1/auth/login', {
         email: email,
-        senha: senha
+        password: senha
       });
 
       // 2. Login validade,  recebe o Token JWT e o Role do usuário

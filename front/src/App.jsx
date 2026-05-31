@@ -1,5 +1,5 @@
 import React from 'react';
-import Login from './pages/Dashboard'; // Importa o componente que você criou
+import Login from './pages/Login'; // Importa o componente que você criou
 
 function App() {
   return (
