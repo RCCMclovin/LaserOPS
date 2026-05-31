@@ -20,9 +20,9 @@ const index = async (req: Request, res: Response) => {
 */
   try {
     const requests = await participantService.getAllParticipants();
-    res.json(requests);
+    return res.json(requests);
   } catch (e) {
-    res.status(500).json(e);
+    return res.status(500).json(e);
   }
 };
 const players = async (req: Request, res: Response) => {
@@ -41,9 +41,9 @@ const players = async (req: Request, res: Response) => {
 */
   try {
     const requests = await participantService.getAllPlayers();
-    res.json(requests);
+    return res.json(requests);
   } catch (e) {
-    res.status(500).json(e);
+    return res.status(500).json(e);
   }
 };
 const spectators = async (req: Request, res: Response) => {
@@ -62,9 +62,9 @@ const spectators = async (req: Request, res: Response) => {
 */
   try {
     const requests = await participantService.getAllSpectator();
-    res.json(requests);
+    return res.json(requests);
   } catch (e) {
-    res.status(500).json(e);
+    return res.status(500).json(e);
   }
 };
 const removeById = async (req: Request, res: Response) => {
@@ -89,15 +89,15 @@ const removeById = async (req: Request, res: Response) => {
   try {
     const event = await eventService.read(req.params.eventId as string);
     if(!event){
-        res.status(StatusCodes.NOT_ACCEPTABLE).send(ReasonPhrases.NOT_ACCEPTABLE);
+        return res.status(StatusCodes.NOT_ACCEPTABLE).send(ReasonPhrases.NOT_ACCEPTABLE);
     }
     if(req.session.utid != UserTypes.admin && req.session.uid != event?.creatorId){
-        res.status(StatusCodes.UNAUTHORIZED).send(ReasonPhrases.UNAUTHORIZED);
+        return res.status(StatusCodes.UNAUTHORIZED).send(ReasonPhrases.UNAUTHORIZED);
     }
     await participantService.remove(req.params.userId as string, req.params.eventId as string);
-    res.status(StatusCodes.NO_CONTENT).send(ReasonPhrases.NO_CONTENT);
+    return res.status(StatusCodes.NO_CONTENT).send(ReasonPhrases.NO_CONTENT);
   } catch (e) {
-    res.status(StatusCodes.INTERNAL_SERVER_ERROR).json(e);
+    return res.status(StatusCodes.INTERNAL_SERVER_ERROR).json(e);
   }
 };
 
@@ -122,12 +122,12 @@ const remove = async (req: Request, res: Response) => {
   try {
     const event = await eventService.read(req.params.eventId as string);
     if(!event){
-        res.status(StatusCodes.NOT_ACCEPTABLE).send(ReasonPhrases.NOT_ACCEPTABLE);
+        return res.status(StatusCodes.NOT_ACCEPTABLE).send(ReasonPhrases.NOT_ACCEPTABLE);
     }
     await participantService.remove(req.session.uid as string, req.params.eventId as string);
-    res.status(StatusCodes.NO_CONTENT).send(ReasonPhrases.NO_CONTENT);
+    return res.status(StatusCodes.NO_CONTENT).send(ReasonPhrases.NO_CONTENT);
   } catch (e) {
-    res.status(StatusCodes.INTERNAL_SERVER_ERROR).json(e);
+    return res.status(StatusCodes.INTERNAL_SERVER_ERROR).json(e);
   }
 };
 const createAsPlayer = async (req: Request, res: Response) => {
@@ -156,15 +156,15 @@ const createAsPlayer = async (req: Request, res: Response) => {
   try {
     const event = await eventService.read(req.params.eventId as string);
     if(!event){
-        res.status(StatusCodes.NOT_ACCEPTABLE).send(ReasonPhrases.NOT_ACCEPTABLE);
+        return res.status(StatusCodes.NOT_ACCEPTABLE).send(ReasonPhrases.NOT_ACCEPTABLE);
     }
     if(event?.code != req.params.code){ 
-        res.status(StatusCodes.UNAUTHORIZED).send(ReasonPhrases.UNAUTHORIZED);
+        return res.status(StatusCodes.UNAUTHORIZED).send(ReasonPhrases.UNAUTHORIZED);
     }
     await participantService.create(req.session.uid as string, req.params.eventId as string, "Player");
-    res.status(StatusCodes.OK).send(ReasonPhrases.OK);
+    return res.status(StatusCodes.OK).send(ReasonPhrases.OK);
   } catch (e) {
-    res.status(StatusCodes.INTERNAL_SERVER_ERROR).send(e);
+    return res.status(StatusCodes.INTERNAL_SERVER_ERROR).send(e);
   }
 };
 
@@ -193,12 +193,12 @@ const createAsSpectator = async (req: Request, res: Response) => {
   try {
     const event = await eventService.read(req.params.eventId as string);
     if(!event){
-        res.status(StatusCodes.NOT_ACCEPTABLE).send(ReasonPhrases.NOT_ACCEPTABLE);
+        return res.status(StatusCodes.NOT_ACCEPTABLE).send(ReasonPhrases.NOT_ACCEPTABLE);
     }
     await participantService.create(req.session.uid as string, req.params.eventId as string, "Spectator");
-    res.status(StatusCodes.OK).send(ReasonPhrases.OK);
+    return res.status(StatusCodes.OK).send(ReasonPhrases.OK);
   } catch (e) {
-    res.status(StatusCodes.INTERNAL_SERVER_ERROR).send(e);
+    return res.status(StatusCodes.INTERNAL_SERVER_ERROR).send(e);
   }
 };
 

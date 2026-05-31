@@ -5,8 +5,8 @@ import participantController from './participant.controller';
 const router = Router();
 
 router.get('/', isAuth, participantController.index);
-router.get('/players', participantController.players);
-router.get('/spectators', participantController.spectators);
+router.get('/players', isAuth, participantController.players);
+router.get('/spectators', isAuth, participantController.spectators);
 router.delete('/u/:userId/e/:eventId', isAuth, participantController.removeById);
 router.post('/:eventId', isAuth, participantController.createAsSpectator);
 router.post('/:eventId/:code', isAuth, participantController.createAsPlayer);

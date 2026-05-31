@@ -22,9 +22,9 @@ const index = async (req: Request, res: Response) => {
 */
   try {
     const requests = await storeRequestService.getAllRequests();
-    res.json(requests);
+    return res.json(requests);
   } catch (e) {
-    res.status(500).json(e);
+    return res.status(500).json(e);
   }
 };
 const indexFromUser = async (req: Request, res: Response) => {
@@ -44,9 +44,9 @@ const indexFromUser = async (req: Request, res: Response) => {
 */
   try {
     const requests = await storeRequestService.getAllRequestsFromUser(req.params.userId as string);
-    res.json(requests);
+    return res.json(requests);
   } catch (e) {
-    res.status(500).json(e);
+    return res.status(500).json(e);
   }
 };
 const create = async (req: Request, res: Response) => {
@@ -80,7 +80,7 @@ const create = async (req: Request, res: Response) => {
     } as RequestDTO;
 
   if(req.session.utid != UserTypes.client){
-    res.status(StatusCodes.FORBIDDEN).send(ReasonPhrases.FORBIDDEN);
+    return res.status(StatusCodes.FORBIDDEN).send(ReasonPhrases.FORBIDDEN);
   }
 
   try {
@@ -88,12 +88,12 @@ const create = async (req: Request, res: Response) => {
     const hasNotPending = !!(requests.filter((r) => r.status == "Pending"));
     if (hasNotPending) {
       const new_request = await storeRequestService.create(request);
-      res.json(new_request);
+      return res.json(new_request);
     } else {
-      res.status(StatusCodes.CONFLICT).send(ReasonPhrases.CONFLICT);
+      return res.status(StatusCodes.CONFLICT).send(ReasonPhrases.CONFLICT);
     }
   } catch (e) {
-    res.status(StatusCodes.INTERNAL_SERVER_ERROR).send(e);
+    return res.status(StatusCodes.INTERNAL_SERVER_ERROR).send(e);
   }
 };
 const remove = async (req: Request, res: Response) => {
@@ -151,7 +151,7 @@ const read = async (req: Request, res: Response) => {
     }
     return res.json(request);
   } catch (e) {
-    res.status(StatusCodes.INTERNAL_SERVER_ERROR).json(e);
+    return res.status(StatusCodes.INTERNAL_SERVER_ERROR).json(e);
   }
 };
 const acceptRequest = async (req: Request, res: Response) => {
@@ -195,7 +195,7 @@ const acceptRequest = async (req: Request, res: Response) => {
     }
     
   } catch (e) {
-    res.status(StatusCodes.INTERNAL_SERVER_ERROR).json(e);
+    return res.status(StatusCodes.INTERNAL_SERVER_ERROR).json(e);
   }
 }
 const refuseRequest = async (req: Request, res: Response) => {
@@ -230,7 +230,7 @@ const refuseRequest = async (req: Request, res: Response) => {
       return res.status(StatusCodes.OK).send(ReasonPhrases.OK);
     }
   } catch (e) {
-    res.status(StatusCodes.INTERNAL_SERVER_ERROR).json(e);
+    return res.status(StatusCodes.INTERNAL_SERVER_ERROR).json(e);
   }
 }
 

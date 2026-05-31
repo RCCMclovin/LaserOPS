@@ -8,7 +8,7 @@ export function isAdminOrSelf(req: Request, res: Response, next: NextFunction) {
     (req.session.utid != UserTypes.admin &&
       req.session.uid != req.params.userId)
   )
-    res.status(StatusCodes.FORBIDDEN).send(ReasonPhrases.FORBIDDEN);
+    return res.status(StatusCodes.FORBIDDEN).send(ReasonPhrases.FORBIDDEN);
   else next();
 }
 

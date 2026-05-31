@@ -65,7 +65,7 @@ function Dashboard() {
         
         <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: '20px', marginTop: '20px' }}>
           {/* SEÇÃO DO CLIENT */}
-          {userRole === 'Client' && (
+          {userRole === 'client' && (
             <>
               <div style={cardStyle}>
                 <h3>🎮 Entrar em uma Partida</h3>
@@ -81,7 +81,7 @@ function Dashboard() {
           )}
 
           {/* SEÇÃO DA STORE */}
-          {userRole === 'Store' && (
+          {userRole === 'store' && (
             <>
               <div style={cardStyle}>
                 <h3>⚡ Criar Nova Partida</h3>
@@ -97,7 +97,7 @@ function Dashboard() {
           )}
 
           {/* SEÇÃO DO ADMIN */}
-          {userRole === 'Admin' && (
+          {userRole === 'admin' && (
             <div style={{ ...cardStyle, gridColumn: '1 / -1', borderColor: '#dc3545' }}>
               <h3 style={{ color: '#dc3545' }}>🛡️ Visão Geral do Administrador</h3>
               <div style={{ border: '1px solid #ddd', padding: '15px', marginTop: '15px', borderRadius: '4px', backgroundColor: '#f8f9fa' }}>

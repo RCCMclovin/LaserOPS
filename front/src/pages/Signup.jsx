@@ -20,6 +20,8 @@ function Signup() {
         name: name,
         email: email,
         password: password
+      },{
+        withCredentials: true
       });
 
       setSucesso('Conta criada com sucesso! Redirecionando para o dashboard...');

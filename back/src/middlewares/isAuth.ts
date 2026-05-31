@@ -3,7 +3,7 @@ import { ReasonPhrases, StatusCodes } from 'http-status-codes';
 
 function isAuth(req: Request, res: Response, next: NextFunction) {
   if (!req.session.uid)
-    res.status(StatusCodes.UNAUTHORIZED).send(ReasonPhrases.UNAUTHORIZED);
+    return res.status(StatusCodes.UNAUTHORIZED).send(ReasonPhrases.UNAUTHORIZED);
   else next();
 }
 

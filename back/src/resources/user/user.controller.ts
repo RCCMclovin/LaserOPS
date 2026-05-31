@@ -20,9 +20,9 @@ const index = async (req: Request, res: Response) => {
 */
   try {
     const users = await userService.getAllUsers();
-    res.json(users);
+    return res.json(users);
   } catch (e) {
-    res.status(500).json(e);
+    return res.status(500).json(e);
   }
 };
 const create = async (req: Request, res: Response) => {
@@ -34,7 +34,7 @@ const create = async (req: Request, res: Response) => {
  schema: { $ref: '#/definitions/CreateUserDTO' }
  } 
  #swagger.responses[201] = {
- schema: { $ref: '#/definitions/UserDTO' }
+ description: 'Usuário Criado'
  }
  #swagger.responses[403] = {
  description: 'User unautorized.'
@@ -53,13 +53,13 @@ const create = async (req: Request, res: Response) => {
   try {
     const findByEmail = await userService.findUserByEmail(user.email);
     if (!findByEmail) {
-      const newUser = await userService.createUser(user);
-      res.json(newUser);
+      await userService.createUser(user);
+      return res.status(StatusCodes.CREATED).send(ReasonPhrases.CREATED);
     } else {
-      res.status(StatusCodes.CONFLICT).send(ReasonPhrases.CONFLICT);
+      return res.status(StatusCodes.CONFLICT).send(ReasonPhrases.CONFLICT);
     }
   } catch (e) {
-    res.status(StatusCodes.INTERNAL_SERVER_ERROR).send(e);
+    return res.status(StatusCodes.INTERNAL_SERVER_ERROR).send(e);
   }
 };
 const update = async (req: Request, res: Response) => {
@@ -91,12 +91,12 @@ const update = async (req: Request, res: Response) => {
     const user = req.body as CreateUserDTO | UpdateUserDTO;
     if (await userService.readUser(req.params.userId as string)) {
       const newUser = await userService.updateUser(req.params.userId as string, user);
-      res.json(newUser);
+      return res.json(newUser);
     } else {
-      res.status(StatusCodes.NOT_ACCEPTABLE).send(ReasonPhrases.NOT_ACCEPTABLE);
+      return res.status(StatusCodes.NOT_ACCEPTABLE).send(ReasonPhrases.NOT_ACCEPTABLE);
     }
   } catch (e) {
-    res.status(StatusCodes.INTERNAL_SERVER_ERROR).json(e);
+    return res.status(StatusCodes.INTERNAL_SERVER_ERROR).json(e);
   }
 };
 const remove = async (req: Request, res: Response) => {
@@ -116,9 +116,9 @@ const remove = async (req: Request, res: Response) => {
 */
   try {
     await userService.removeUser(req.params.userId as string);
-    res.status(StatusCodes.NO_CONTENT).send(ReasonPhrases.NO_CONTENT);
+    return res.status(StatusCodes.NO_CONTENT).send(ReasonPhrases.NO_CONTENT);
   } catch (e) {
-    res.status(StatusCodes.INTERNAL_SERVER_ERROR).json(e);
+    return res.status(StatusCodes.INTERNAL_SERVER_ERROR).json(e);
   }
 };
 const read = async (req: Request, res: Response) => {
@@ -135,9 +135,9 @@ const read = async (req: Request, res: Response) => {
 */
   try {
     const user = await userService.readUser(req.params.userId as string);
-    res.json(user);
+    return res.json(user);
   } catch (e) {
-    res.status(StatusCodes.INTERNAL_SERVER_ERROR).json(e);
+    return res.status(StatusCodes.INTERNAL_SERVER_ERROR).json(e);
   }
 };
 
@@ -157,9 +157,9 @@ const checkEmail = async (req: Request, res: Response) => {
   try {
     const email = req.params.email as string;
     const user = await userService.checkEmail(email);
-    res.json(user);
+    return res.json(user);
   } catch (e) {
-    res.status(StatusCodes.INTERNAL_SERVER_ERROR).json(e);
+    return res.status(StatusCodes.INTERNAL_SERVER_ERROR).json(e);
   }
 };
 

@@ -145,14 +145,8 @@
           }
         ],
         "responses": {
-          "200": {
-            "description": "OK"
-          },
           "201": {
-            "schema": {
-              "$ref": "#/definitions/UserDTO"
-            },
-            "description": "Created"
+            "description": "Usuário Criado"
           },
           "403": {
             "description": "User unautorized."

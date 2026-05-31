@@ -42,12 +42,12 @@ schema: { $ref: '#/definitions/Auth' }
          .send('Erro ao salvar sessão');
      }
 
-     res.status(StatusCodes.OK).send({
+     return res.status(StatusCodes.OK).send({
        "msg": "Usuário autenticado"
      });
    });
  } else {
-   res.status(StatusCodes.UNAUTHORIZED).send(ReasonPhrases.UNAUTHORIZED);
+   return res.status(StatusCodes.UNAUTHORIZED).send(ReasonPhrases.UNAUTHORIZED);
  }
 };
 
@@ -64,7 +64,7 @@ const logout = (req: Request, res: Response) => {
  }
   */
   if (!req.session.uid)
-    res.status(StatusCodes.UNAUTHORIZED).send(ReasonPhrases.UNAUTHORIZED);
+    return res.status(StatusCodes.UNAUTHORIZED).send(ReasonPhrases.UNAUTHORIZED);
   else {
     req.session.destroy((err) => {
       if (err)
@@ -72,7 +72,7 @@ const logout = (req: Request, res: Response) => {
           .status(StatusCodes.INTERNAL_SERVER_ERROR)
           .send(ReasonPhrases.INTERNAL_SERVER_ERROR);
     });
-    res.status(StatusCodes.OK).send(ReasonPhrases.OK);
+    return res.status(StatusCodes.OK).send(ReasonPhrases.OK);
   }
 };
 
@@ -110,11 +110,11 @@ const signUp = async (req: Request, res: Response) => {
       const { password, ...newUsuario } = await userService.createUser(usuario);
       req.session.uid = newUsuario.id;
       req.session.utid = newUsuario.userTypeId;
-      res.status(StatusCodes.CREATED).send(newUsuario);
+      return res.status(StatusCodes.CREATED).send(newUsuario);
     }
     // eslint-disable-next-line @typescript-eslint/no-explicit-any
   } catch (e: any) {
-    res.status(StatusCodes.INTERNAL_SERVER_ERROR).send(e.errors);
+    return res.status(StatusCodes.INTERNAL_SERVER_ERROR).send(e.errors);
   }
 };
 

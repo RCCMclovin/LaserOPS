@@ -12,7 +12,7 @@ router.get('/', isAdmin, userController.index);
 router.post('/', isAdmin, validate(userSchema), userController.create);
 router.get('/checkemail/:email', userController.checkEmail);
 router.get('/chkrole', isAuth, userController.checkRole);
-router.get('/:userId', userController.read);
+router.get('/:userId', isAuth, userController.read);
 router.put(
   '/:userId',
   isAdminOrSelf,

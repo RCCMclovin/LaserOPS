@@ -28,9 +28,9 @@ const index = async (req: Request, res: Response) => {
         const {code, ...tmp} = e;
         eventsPublic.push(tmp);
     })
-    res.json(eventsPublic);
+    return res.json(eventsPublic);
   } catch (e) {
-    res.status(500).json(e);
+    return res.status(500).json(e);
   }
 };
 const indexFromUser = async (req: Request, res: Response) => {
@@ -70,7 +70,7 @@ const indexFromUser = async (req: Request, res: Response) => {
     }
     
   } catch (e) {
-    res.status(500).json(e);
+    return res.status(500).json(e);
   }
 };
 const create = async (req: Request, res: Response) => {
@@ -105,7 +105,7 @@ const create = async (req: Request, res: Response) => {
         code = generateRandomString(8);
     }
   }catch (e) {
-    res.status(StatusCodes.INTERNAL_SERVER_ERROR).send(e);
+    return res.status(StatusCodes.INTERNAL_SERVER_ERROR).send(e);
   }
   const body = req.body as CreateEventDTO;
 
@@ -118,9 +118,9 @@ const create = async (req: Request, res: Response) => {
     } as EventDTO;
   try {
     const new_event = await eventService.create(request);
-    res.json(new_event);
+    return res.json(new_event);
   } catch (e) {
-    res.status(StatusCodes.INTERNAL_SERVER_ERROR).send(e);
+    return res.status(StatusCodes.INTERNAL_SERVER_ERROR).send(e);
   }
 };
 const remove = async (req: Request, res: Response) => {
@@ -144,12 +144,12 @@ const remove = async (req: Request, res: Response) => {
   try {
     const event = await eventService.read(req.params.eventId as string);
     if(req.session.utid != UserTypes.admin && req.session.uid != event?.creatorId){
-    res.status(StatusCodes.FORBIDDEN).send(ReasonPhrases.FORBIDDEN);
+    return res.status(StatusCodes.FORBIDDEN).send(ReasonPhrases.FORBIDDEN);
     }
     await eventService.remove(req.params.eventId as string);
-    res.status(StatusCodes.NO_CONTENT).send(ReasonPhrases.NO_CONTENT);
+    return res.status(StatusCodes.NO_CONTENT).send(ReasonPhrases.NO_CONTENT);
   } catch (e) {
-    res.status(StatusCodes.INTERNAL_SERVER_ERROR).json(e);
+    return res.status(StatusCodes.INTERNAL_SERVER_ERROR).json(e);
   }
 };
 const update = async (req: Request, res: Response) => {
@@ -180,10 +180,10 @@ const update = async (req: Request, res: Response) => {
   try {
     const event = await eventService.read(req.params.eventId as string);
     if(!event){
-        res.status(StatusCodes.NOT_ACCEPTABLE).send(ReasonPhrases.NOT_ACCEPTABLE);
+        return res.status(StatusCodes.NOT_ACCEPTABLE).send(ReasonPhrases.NOT_ACCEPTABLE);
     }
     if(req.session.utid != UserTypes.admin && req.session.uid != event?.creatorId){
-      res.status(StatusCodes.FORBIDDEN).send(ReasonPhrases.FORBIDDEN);
+      return res.status(StatusCodes.FORBIDDEN).send(ReasonPhrases.FORBIDDEN);
     }
     const body = req.body as CreateEventDTO;
     const new_event = {
@@ -195,9 +195,9 @@ const update = async (req: Request, res: Response) => {
     } as EventDTO;
 
     const newEvent = await eventService.update(req.params.eventId as string, new_event);
-    res.json(newEvent);
+    return res.json(newEvent);
   } catch (e) {
-    res.status(StatusCodes.INTERNAL_SERVER_ERROR).json(e);
+    return res.status(StatusCodes.INTERNAL_SERVER_ERROR).json(e);
   }
 };
 const togglePublish = async (req: Request, res: Response) => {
@@ -227,10 +227,10 @@ const togglePublish = async (req: Request, res: Response) => {
   try {
     const event: Event | null = await eventService.read(req.params.eventId as string);
     if(!event){
-      res.status(StatusCodes.NOT_ACCEPTABLE).send(ReasonPhrases.NOT_ACCEPTABLE);
+      return res.status(StatusCodes.NOT_ACCEPTABLE).send(ReasonPhrases.NOT_ACCEPTABLE);
     }
     if(req.session.utid != UserTypes.admin && req.session.uid != event?.creatorId){
-     res.status(StatusCodes.FORBIDDEN).send(ReasonPhrases.FORBIDDEN);
+     return res.status(StatusCodes.FORBIDDEN).send(ReasonPhrases.FORBIDDEN);
     }
     const new_event = {
     date:event?.date,
@@ -241,9 +241,9 @@ const togglePublish = async (req: Request, res: Response) => {
     } as EventDTO;
 
     const newEvent = await eventService.update(req.params.eventId as string, new_event);
-    res.json(newEvent);
+    return res.json(newEvent);
   } catch (e) {
-    res.status(StatusCodes.INTERNAL_SERVER_ERROR).json(e);
+    return res.status(StatusCodes.INTERNAL_SERVER_ERROR).json(e);
   }
 };
 const read = async (req: Request, res: Response) => {

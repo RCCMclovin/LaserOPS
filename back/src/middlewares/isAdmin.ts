@@ -4,7 +4,7 @@ import { UserTypes } from '../resources/userType/userType.consts';
 
 export function isAdmin(req: Request, res: Response, next: NextFunction) {
   if (!req.session.uid || req.session.utid != UserTypes.admin)
-    res.status(StatusCodes.FORBIDDEN).send(ReasonPhrases.FORBIDDEN);
+    return res.status(StatusCodes.FORBIDDEN).send(ReasonPhrases.FORBIDDEN);
   else next();
 }
 

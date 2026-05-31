@@ -8,7 +8,7 @@ export const validate = (schema: Schema) => {
             abortEarly: false
         });
         if (result.error) {
-            res.status(StatusCodes.UNPROCESSABLE_ENTITY).json(result.error.details);
+            return res.status(StatusCodes.UNPROCESSABLE_ENTITY).json(result.error.details);
         } else {
             next();
         }
