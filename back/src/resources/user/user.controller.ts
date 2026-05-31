@@ -186,16 +186,16 @@ const checkRole = async (req: Request, res: Response) => {
     if (!user) {
         return res.status(StatusCodes.NOT_FOUND).json({ mensagem: "Usuário não encontrado." });
     }
-
     if (user.userTypeId === UserTypes.admin) {
         return res.json({ name: user.name, role: "admin" });
     }
-    if(user.userTypeId == UserTypes.store){
-        res.json({name:user.name, role: "store"}).send();
-        return;
+    if(user.userTypeId === UserTypes.client){
+        return res.json({ name: user.name, role: "client" });
+    }
+    if(user.userTypeId === UserTypes.store){
+        return res.json({name:user.name, role: "store"});
     }else{
-        res.status(StatusCodes.INTERNAL_SERVER_ERROR).send(ReasonPhrases.INTERNAL_SERVER_ERROR);
-        return;
+        return res.status(StatusCodes.INTERNAL_SERVER_ERROR).send(ReasonPhrases.INTERNAL_SERVER_ERROR);
     }
   } catch (e) {
     console.error("Erro interno no checkRole:", e); 

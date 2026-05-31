@@ -22,11 +22,11 @@ function Signup() {
         password: password
       });
 
-      setSucesso('Conta criada com sucesso! Redirecionando para o login...');
+      setSucesso('Conta criada com sucesso! Redirecionando para o dashboard...');
       
       // Aguarda 2 segundos e redireciona
       setTimeout(() => {
-        navigate('/');
+        navigate('/dashboard');
       }, 2000);
 
     } catch (error) {

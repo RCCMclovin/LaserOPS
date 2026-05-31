@@ -14,22 +14,19 @@ function Dashboard() {
     const verificarUsuarioLogado = async () => {
       try {
         // Pega o nome e role do usuário
-        const resposta = await axios.get('http://localhost:3334/v1/user/chkrole', { 
+        const resposta = (await axios.get('http://localhost:3334/v1/user/chkrole', { 
           withCredentials: true 
-        });
-        setUserName(resposta.data.name);
-        setUserRole(resposta.data.role); 
+        })).data;
+        setUserName(resposta.name);
+        setUserRole(resposta.role); 
         setCarregando(false); // Já temos os dados, pode liberar a tela!
 
       } catch (error) {
         console.error("Erro ao validar sessão:", error);
-        // Caso  de erro, manda de volta pro Login
-        navigate('/');
       }
     };
-
-    verificarUsuarioLogado();
-  }, [navigate]);
+    if(!userName) verificarUsuarioLogado();
+  }, [navigate, userName]);
 
   // Função de Logout modificada
   const handleLogout = async () => {
