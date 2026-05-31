@@ -74,6 +74,21 @@ const doc = {
         name: "Fulano de Tal",
         password: "SenhaForte", 
         userTypeId: "7d1f6344-af5f-4cc3-bcc1-f0e3e35d4360"
+    },
+    UpdateUserDTO: {
+        email: "email@example.com",
+        name: "Fulano de Tal",
+        password: "Optional", 
+        userTypeId: "9cedc214-6eea-4ebd-9900-aeb25b1fb4a4"
+    },
+    RoleDTO: {
+      name: "Fulano de Tal",
+      role: "client"
+    },
+    Participant: {
+      userId: "2179db3e-6f49-4940-9345-61c001a30623",
+      eventId: "3f8946e1-ed6f-48b0-9087-4ddc6b0a11cc",
+      role: "Spectator"
     }
 
   },

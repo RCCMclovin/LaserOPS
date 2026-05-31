@@ -198,10 +198,26 @@
     },
     "/v1/user/chkrole": {
       "get": {
+        "tags": [
+          "Usuários"
+        ],
+        "summary": "Retorna o nome do usuário logado e o papel dele.",
         "description": "",
         "responses": {
           "200": {
-            "description": "OK"
+            "description": "OK",
+            "schema": {
+              "$ref": "#/definitions/RoleDTO"
+            }
+          },
+          "401": {
+            "description": "Usuário não logado."
+          },
+          "404": {
+            "description": "Usuário não encontrado."
+          },
+          "500": {
+            "description": "Internal Server Error"
           }
         }
       }
@@ -252,7 +268,7 @@
             "name": "body",
             "in": "body",
             "schema": {
-              "$ref": "#/definitions/UpdateUserDTO"
+              "$ref": "#/definitions/UpadateUserDTO"
             }
           }
         ],
@@ -402,6 +418,70 @@
         }
       }
     },
+    "/v1/request/accept/{requestId}": {
+      "post": {
+        "tags": [
+          "StoreRequests"
+        ],
+        "summary": "Aceita um pedido específico.",
+        "description": "",
+        "parameters": [
+          {
+            "name": "requestId",
+            "in": "path",
+            "required": true,
+            "type": "string",
+            "description": "ID do pedido"
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Update Successful"
+          },
+          "403": {
+            "description": "User unautorized."
+          },
+          "404": {
+            "description": "User or request not found."
+          },
+          "500": {
+            "description": "Internal Server Error"
+          }
+        }
+      }
+    },
+    "/v1/request/refuse/{requestId}": {
+      "post": {
+        "tags": [
+          "StoreRequests"
+        ],
+        "summary": "Recusa um pedido específico.",
+        "description": "",
+        "parameters": [
+          {
+            "name": "requestId",
+            "in": "path",
+            "required": true,
+            "type": "string",
+            "description": "ID do pedido"
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Update Successful"
+          },
+          "403": {
+            "description": "User unautorized."
+          },
+          "404": {
+            "description": "User or request not found."
+          },
+          "500": {
+            "description": "Internal Server Error"
+          }
+        }
+      }
+    },
     "/v1/request/{requestId}": {
       "get": {
         "tags": [
@@ -427,6 +507,9 @@
           },
           "403": {
             "description": "User unautorized."
+          },
+          "404": {
+            "description": "Request not found."
           },
           "500": {
             "description": "Internal Server Error"
@@ -526,7 +609,7 @@
         }
       }
     },
-    "/v1/event/publish": {
+    "/v1/event/publish/{eventId}": {
       "post": {
         "tags": [
           "Eventos"
@@ -536,9 +619,10 @@
         "parameters": [
           {
             "name": "eventId",
-            "description": "ID do evento",
-            "in": "query",
-            "type": "string"
+            "in": "path",
+            "required": true,
+            "type": "string",
+            "description": "ID do evento"
           }
         ],
         "responses": {
@@ -602,57 +686,14 @@
             "description": "Internal Server Error"
           }
         }
-      },
-      "put": {
-        "tags": [
-          "Usuários"
-        ],
-        "summary": "Atualiza os dados de um usuário específico.",
-        "description": "",
-        "parameters": [
-          {
-            "name": "userId",
-            "in": "path",
-            "required": true,
-            "type": "string",
-            "description": "ID do usuário"
-          },
-          {
-            "name": "body",
-            "in": "body",
-            "schema": {
-              "$ref": "#/definitions/UpdateUserDTO"
-            }
-          }
-        ],
-        "responses": {
-          "200": {
-            "description": "OK",
-            "schema": {
-              "$ref": "#/definitions/UserDTO"
-            }
-          },
-          "403": {
-            "description": "User unautorized."
-          },
-          "406": {
-            "description": "Não existe um usuário com o id informado."
-          },
-          "422": {
-            "description": "Body inválido."
-          },
-          "500": {
-            "description": "Internal Server Error."
-          }
-        }
       }
     },
     "/v1/event/{eventId}": {
-      "get": {
+      "put": {
         "tags": [
           "Eventos"
         ],
-        "summary": "Recupera dados de um evento específico.",
+        "summary": "Atualiza os dados de um evento.",
         "description": "",
         "parameters": [
           {
@@ -661,11 +702,33 @@
             "required": true,
             "type": "string",
             "description": "ID do evento"
+          },
+          {
+            "name": "body",
+            "in": "body",
+            "schema": {
+              "$ref": "#/definitions/CreateEventDTO"
+            }
           }
         ],
         "responses": {
           "200": {
-            "description": "OK"
+            "description": "OK",
+            "schema": {
+              "$ref": "#/definitions/Event"
+            }
+          },
+          "403": {
+            "description": "User unautorized."
+          },
+          "406": {
+            "description": "Não existe um evento com o id informado."
+          },
+          "422": {
+            "description": "Body inválido."
+          },
+          "500": {
+            "description": "Internal Server Error."
           }
         }
       },
@@ -696,6 +759,29 @@
           },
           "500": {
             "description": "Internal Server Error."
+          }
+        }
+      }
+    },
+    "/v1/event/read/{eventId}": {
+      "get": {
+        "tags": [
+          "Eventos"
+        ],
+        "summary": "Recupera dados de um evento específico.",
+        "description": "",
+        "parameters": [
+          {
+            "name": "eventId",
+            "in": "path",
+            "required": true,
+            "type": "string",
+            "description": "ID do evento"
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "OK"
           }
         }
       }
@@ -1155,6 +1241,57 @@
         "userTypeId": {
           "type": "string",
           "example": "7d1f6344-af5f-4cc3-bcc1-f0e3e35d4360"
+        }
+      }
+    },
+    "UpdateUserDTO": {
+      "type": "object",
+      "properties": {
+        "email": {
+          "type": "string",
+          "example": "email@example.com"
+        },
+        "name": {
+          "type": "string",
+          "example": "Fulano de Tal"
+        },
+        "password": {
+          "type": "string",
+          "example": "Optional"
+        },
+        "userTypeId": {
+          "type": "string",
+          "example": "9cedc214-6eea-4ebd-9900-aeb25b1fb4a4"
+        }
+      }
+    },
+    "RoleDTO": {
+      "type": "object",
+      "properties": {
+        "name": {
+          "type": "string",
+          "example": "Fulano de Tal"
+        },
+        "role": {
+          "type": "string",
+          "example": "client"
+        }
+      }
+    },
+    "Participant": {
+      "type": "object",
+      "properties": {
+        "userId": {
+          "type": "string",
+          "example": "2179db3e-6f49-4940-9345-61c001a30623"
+        },
+        "eventId": {
+          "type": "string",
+          "example": "3f8946e1-ed6f-48b0-9087-4ddc6b0a11cc"
+        },
+        "role": {
+          "type": "string",
+          "example": "Spectator"
         }
       }
     }

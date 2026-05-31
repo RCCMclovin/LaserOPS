@@ -83,6 +83,10 @@ const create = async (req: Request, res: Response) => {
  }
 */
 
+  if(req.session.utid == UserTypes.client){
+    return res.status(StatusCodes.UNAUTHORIZED).send(ReasonPhrases.UNAUTHORIZED);
+  }
+
   let code: string = generateRandomString(8);
   try{
     while(!eventService.isCodeUnique(code)){
@@ -91,18 +95,15 @@ const create = async (req: Request, res: Response) => {
   }catch (e) {
     res.status(StatusCodes.INTERNAL_SERVER_ERROR).send(e);
   }
+  const body = req.body as CreateEventDTO;
 
   const request = {
-    ...req.body as CreateEventDTO, 
+    date: new Date(body.date),
+    description: body.description,
     creatorId:req.session.uid, 
     code: code,
-    isPublished: 'false',
+    isPublished: false,
     } as EventDTO;
-
-  if(req.session.utid == UserTypes.client){
-    res.status(StatusCodes.UNAUTHORIZED).send(ReasonPhrases.UNAUTHORIZED);
-  }
-
   try {
     const new_event = await eventService.create(request);
     res.json(new_event);
@@ -172,8 +173,10 @@ const update = async (req: Request, res: Response) => {
     if(req.session.utid != UserTypes.admin && req.session.uid != event?.creatorId){
       res.status(StatusCodes.FORBIDDEN).send(ReasonPhrases.FORBIDDEN);
     }
+    const body = req.body as CreateEventDTO;
     const new_event = {
-    ...req.body as CreateEventDTO, 
+    date: new Date(body.date),
+    description: body.description, 
     creatorId:event?.creatorId, 
     code: event?.code,
     isPublished: event?.isPublished,
@@ -210,13 +213,12 @@ const togglePublish = async (req: Request, res: Response) => {
  }
 */
   try {
-    const event = await eventService.read(req.params.eventId as string);
+    const event: Event | null = await eventService.read(req.params.eventId as string);
     if(!event){
-        res.status(StatusCodes.NOT_ACCEPTABLE).send(ReasonPhrases.NOT_ACCEPTABLE);
+      res.status(StatusCodes.NOT_ACCEPTABLE).send(ReasonPhrases.NOT_ACCEPTABLE);
     }
     if(req.session.utid != UserTypes.admin && req.session.uid != event?.creatorId){
-        
-    res.status(StatusCodes.FORBIDDEN).send(ReasonPhrases.FORBIDDEN);
+     res.status(StatusCodes.FORBIDDEN).send(ReasonPhrases.FORBIDDEN);
     }
     const new_event = {
     date:event?.date,
@@ -253,18 +255,18 @@ const read = async (req: Request, res: Response) => {
   
   try {
     const event: Event | null = await eventService.read(req.params.eventId as string);
-    if(req.session.uid == event?.creatorId){
-        res.json(event);
+    if(event && req.session.uid == event?.creatorId){
+        return res.json(event);
     }else{
         if(event){
             // eslint-disable-next-line @typescript-eslint/no-unused-vars
             const {code, ...publicEvent} = event;
-            res.json(publicEvent);
+            return res.json(publicEvent);
         }
     }
     
   } catch (e) {
-    res.status(StatusCodes.INTERNAL_SERVER_ERROR).json(e);
+    return res.status(StatusCodes.INTERNAL_SERVER_ERROR).json(e);
   }
 };
 

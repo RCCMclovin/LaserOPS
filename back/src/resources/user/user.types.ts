@@ -5,4 +5,9 @@ export type CreateUserDTO = Pick<
   'name' | 'email' | 'password' | 'userTypeId'
 >;
 
+export type UpdateUserDTO = Pick<
+  User,
+  'name' | 'email' | 'userTypeId'
+>;
+
 export type UserDTO = Omit<User, 'password'>;

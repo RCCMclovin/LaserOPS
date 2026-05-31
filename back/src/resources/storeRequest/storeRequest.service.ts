@@ -23,6 +23,11 @@ async function remove(id: string): Promise<StoreRequest>{
     return request;
 }
 
+async function update(id: string, data: RequestDTO): Promise<StoreRequest>{
+    const request = await prisma.storeRequest.update({where:{id}, data:data});
+    return request;
+}
+
 async function findRequest(id: string): Promise<StoreRequest | null>{
     const request = await prisma.storeRequest.findFirst({where:{id}});
     return request;    
@@ -33,5 +38,6 @@ export default {
     getAllRequestsFromUser,
     create,
     remove,
+    update,
     findRequest,
 }

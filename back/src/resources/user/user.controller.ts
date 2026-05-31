@@ -1,6 +1,6 @@
 import { Request, Response } from 'express';
 import userService from './user.service';
-import { CreateUserDTO} from './user.types';
+import { CreateUserDTO, UpdateUserDTO} from './user.types';
 import { ReasonPhrases, StatusCodes } from 'http-status-codes';
 import { UserTypes } from '../userType/userType.consts';
 
@@ -69,7 +69,7 @@ const update = async (req: Request, res: Response) => {
  #swagger.parameters['userId'] = { description: 'ID do usuário' }
  #swagger.parameters['body'] = {
  in: 'body',
- schema: { $ref: '#/definitions/UpdateUserDTO' }
+ schema: { $ref: '#/definitions/UpadateUserDTO' }
  } 
  #swagger.responses[200] = {
  schema: { $ref: '#/definitions/UserDTO' }
@@ -88,7 +88,7 @@ const update = async (req: Request, res: Response) => {
  }
 */
   try {
-    const user = req.body as CreateUserDTO;
+    const user = req.body as CreateUserDTO | UpdateUserDTO;
     if (await userService.readUser(req.params.userId as string)) {
       const newUser = await userService.updateUser(req.params.userId as string, user);
       res.json(newUser);
@@ -164,6 +164,22 @@ const checkEmail = async (req: Request, res: Response) => {
 };
 
 const checkRole = async (req: Request, res: Response) => {
+  /*
+ #swagger.tags = ["Usuários"]
+ #swagger.summary = 'Retorna o nome do usuário logado e o papel dele.'
+ #swagger.responses[200] = {
+ schema: { $ref: '#/definitions/RoleDTO' }
+ }
+ #swagger.responses[401] = {
+ description: "Usuário não logado."
+ }
+ #swagger.responses[404] = {
+ description: "Usuário não encontrado."
+ }
+ #swagger.responses[500] = {
+ description: "Internal Server Error"
+ }
+*/
   try {
     const user = await userService.readUser(req.session.uid as string);
 
@@ -181,12 +197,6 @@ const checkRole = async (req: Request, res: Response) => {
         res.status(StatusCodes.INTERNAL_SERVER_ERROR).send(ReasonPhrases.INTERNAL_SERVER_ERROR);
         return;
     }
-    if (user.userTypeId === UserTypes.store) {
-        return res.json({ name: user.name, role: "store" });
-    }
-
-    return res.status(StatusCodes.INTERNAL_SERVER_ERROR).json({ mensagem: "Tipo de usuário inválido." });
-    
   } catch (e) {
     console.error("Erro interno no checkRole:", e); 
     return res.status(StatusCodes.INTERNAL_SERVER_ERROR).json({ mensagem: "Erro interno no servidor." });

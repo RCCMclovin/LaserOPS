@@ -3,6 +3,8 @@ import { ReasonPhrases, StatusCodes } from 'http-status-codes';
 import storeRequestService from './storeRequest.service';
 import { CreateRequestDTO, RequestDTO } from './storeRequest.types';
 import { UserTypes } from '../userType/userType.consts';
+import userService from '../user/user.service';
+import { UpdateUserDTO } from '../user/user.types';
 
 const index = async (req: Request, res: Response) => {
   /*
@@ -83,8 +85,8 @@ const create = async (req: Request, res: Response) => {
 
   try {
     const requests = await storeRequestService.getAllRequestsFromUser(request.userId);
-    const hasPending = !!(requests.filter((r) => r.status == "Pending"));
-    if (!hasPending) {
+    const hasNotPending = !!(requests.filter((r) => r.status == "Pending"));
+    if (hasNotPending) {
       const new_request = await storeRequestService.create(request);
       res.json(new_request);
     } else {
@@ -111,13 +113,13 @@ const remove = async (req: Request, res: Response) => {
 */
   try {
     const request = await storeRequestService.findRequest(req.params.requestId as string);
-    if(req.session.utid != UserTypes.admin || req.session.uid != request?.userId){
-        res.status(StatusCodes.FORBIDDEN).send(ReasonPhrases.FORBIDDEN);
+    if(req.session.utid != UserTypes.admin && req.session.uid != request?.userId){
+        return res.status(StatusCodes.FORBIDDEN).send(ReasonPhrases.FORBIDDEN);
     }
     await storeRequestService.remove(req.params.requestId as string);
-    res.status(StatusCodes.NO_CONTENT).send(ReasonPhrases.NO_CONTENT);
+    return res.status(StatusCodes.NO_CONTENT).send(ReasonPhrases.NO_CONTENT);
   } catch (e) {
-    res.status(StatusCodes.INTERNAL_SERVER_ERROR).json(e);
+    return res.status(StatusCodes.INTERNAL_SERVER_ERROR).json(e);
   }
 };
 const read = async (req: Request, res: Response) => {
@@ -131,6 +133,9 @@ const read = async (req: Request, res: Response) => {
  #swagger.responses[403] = {
  description: 'User unautorized.'
  }
+ #swagger.responses[404] = {
+ description: 'Request not found.'
+ }
  #swagger.responses[500] = {
  description: "Internal Server Error"
  }
@@ -138,14 +143,96 @@ const read = async (req: Request, res: Response) => {
   
   try {
     const request = await storeRequestService.findRequest(req.params.requestId as string);
-    if(req.session.utid != UserTypes.admin || req.session.uid != request?.userId){
-        res.status(StatusCodes.FORBIDDEN).send(ReasonPhrases.FORBIDDEN);
+    if(!request){
+      return res.status(StatusCodes.NOT_FOUND).send(ReasonPhrases.NOT_FOUND);
     }
-    res.json(request);
+    if(req.session.utid != UserTypes.admin && req.session.uid != request?.userId){
+        return res.status(StatusCodes.FORBIDDEN).send(ReasonPhrases.FORBIDDEN);
+    }
+    return res.json(request);
   } catch (e) {
     res.status(StatusCodes.INTERNAL_SERVER_ERROR).json(e);
   }
 };
+const acceptRequest = async (req: Request, res: Response) => {
+  /*
+ #swagger.tags = ["StoreRequests"]
+ #swagger.summary = 'Aceita um pedido específico.'
+ #swagger.parameters['requestId'] = { description: 'ID do pedido' }
+ #swagger.responses[200] = {
+ description: "Update Successful"
+ }
+ #swagger.responses[403] = {
+ description: 'User unautorized.'
+ }
+ #swagger.responses[404] = {
+ description: 'User or request not found.'
+ }
+ #swagger.responses[500] = {
+ description: "Internal Server Error"
+ }
+*/
+  try {
+    const request = await storeRequestService.findRequest(req.params.requestId as string);
+    if(!request){
+      return res.sendStatus(StatusCodes.NOT_FOUND).send(ReasonPhrases.NOT_FOUND);
+    }else{
+      if(req.session.utid != UserTypes.admin){
+        return res.status(StatusCodes.FORBIDDEN).send(ReasonPhrases.FORBIDDEN);
+      }
+      request.status = "Accepted";
+      const user = await userService.readUser(request.userId);
+      if(!user){
+        return res.sendStatus(StatusCodes.NOT_FOUND).send(ReasonPhrases.NOT_FOUND);
+      }else{
+        user.userTypeId = UserTypes.store;
+        const new_info: UpdateUserDTO = {name: user.name, email:user.email, userTypeId: user.userTypeId};
+        await userService.updateUser(user.id, new_info);
+        const new_request: RequestDTO = {text: request.text, userId: request.userId, status:request.status};
+        await storeRequestService.update(request.id, new_request);
+        return res.status(StatusCodes.OK).send(ReasonPhrases.OK);
+      }
+    }
+    
+  } catch (e) {
+    res.status(StatusCodes.INTERNAL_SERVER_ERROR).json(e);
+  }
+}
+const refuseRequest = async (req: Request, res: Response) => {
+  /*
+ #swagger.tags = ["StoreRequests"]
+ #swagger.summary = 'Recusa um pedido específico.'
+ #swagger.parameters['requestId'] = { description: 'ID do pedido' }
+ #swagger.responses[200] = {
+ description: "Update Successful"
+ }
+ #swagger.responses[403] = {
+ description: 'User unautorized.'
+ }
+ #swagger.responses[404] = {
+ description: 'User or request not found.'
+ }
+ #swagger.responses[500] = {
+ description: "Internal Server Error"
+ }
+*/
+  try {
+    const request = await storeRequestService.findRequest(req.params.requestId as string);
+    if(!request){
+      return res.sendStatus(StatusCodes.NOT_FOUND).send(ReasonPhrases.NOT_FOUND);
+    }else{
+      if(req.session.utid != UserTypes.admin){
+        return res.status(StatusCodes.FORBIDDEN).send(ReasonPhrases.FORBIDDEN);
+      }
+      request.status = "Refused";
+      const new_request: RequestDTO = {text: request.text, userId: request.userId, status:request.status};
+      await storeRequestService.update(request.id, new_request);
+      return res.status(StatusCodes.OK).send(ReasonPhrases.OK);
+    }
+  } catch (e) {
+    res.status(StatusCodes.INTERNAL_SERVER_ERROR).json(e);
+  }
+}
 
 export default {
     index,
@@ -153,4 +240,6 @@ export default {
     create,
     remove,
     read,
+    acceptRequest,
+    refuseRequest,
 }
