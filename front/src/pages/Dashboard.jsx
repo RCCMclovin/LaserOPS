@@ -14,10 +14,9 @@ function Dashboard() {
     const verificarUsuarioLogado = async () => {
       try {
         // Pega o nome e role do usuário
-        const resposta = await axios.get('http://localhost:3334/v1/auth/me', { 
+        const resposta = await axios.get('http://localhost:3334/v1/user/chkrole', { 
           withCredentials: true 
         });
-
         setUserName(resposta.data.name);
         setUserRole(resposta.data.role); 
         setCarregando(false); // Já temos os dados, pode liberar a tela!
