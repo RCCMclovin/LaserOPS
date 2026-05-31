@@ -85,8 +85,8 @@ const create = async (req: Request, res: Response) => {
 
   try {
     const requests = await storeRequestService.getAllRequestsFromUser(request.userId);
-    const hasNotPending: boolean = requests.some((r) => r.status == "Pending");
-    if (hasNotPending) {
+    const hasPending: boolean = requests.some((r) => r.status == "Pending");
+    if (!hasPending) {
       const new_request = await storeRequestService.create(request);
       return res.json(new_request);
     } else {
