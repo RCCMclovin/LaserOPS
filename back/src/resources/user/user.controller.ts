@@ -174,17 +174,12 @@ const checkRole = async (req: Request, res: Response) => {
     if (user.userTypeId === UserTypes.admin) {
         return res.json({ name: user.name, role: "admin" });
     }
-<<<<<<< HEAD
     if(user.userTypeId == UserTypes.store){
         res.json({name:user.name, role: "store"}).send();
         return;
     }else{
         res.status(StatusCodes.INTERNAL_SERVER_ERROR).send(ReasonPhrases.INTERNAL_SERVER_ERROR);
         return;
-=======
-    if (user.userTypeId === UserTypes.client) {
-        return res.json({ name: user.name, role: "client" });
->>>>>>> refs/remotes/origin/main
     }
     if (user.userTypeId === UserTypes.store) {
         return res.json({ name: user.name, role: "store" });
