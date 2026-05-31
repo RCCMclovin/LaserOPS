@@ -49,14 +49,26 @@ const indexFromUser = async (req: Request, res: Response) => {
  }
 */
   try {
-    const events = await eventService.getAllEventsFromUser(req.params.userId as string);
-    const eventsPublic: EventPublic[] = [];
-    events.forEach((e) => {
+    if(req.session.uid && req.session.uid === req.params.userId || req.session.utid === UserTypes.admin){
+      const events = await eventService.getAllEventsFromUser(req.params.userId as string, null);
+      const eventsPublic: EventPublic[] = [];
+      events.forEach((e) => {
         // eslint-disable-next-line @typescript-eslint/no-unused-vars
         const {code, ...tmp} = e;
         eventsPublic.push(tmp);
-    })
-    res.json(eventsPublic);
+      })
+      return res.json(eventsPublic);
+    }else{
+      const events = await eventService.getAllEventsFromUser(req.params.userId as string, true);
+      const eventsPublic: EventPublic[] = [];
+      events.forEach((e) => {
+        // eslint-disable-next-line @typescript-eslint/no-unused-vars
+        const {code, ...tmp} = e;
+        eventsPublic.push(tmp);
+      })
+      return res.json(eventsPublic);
+    }
+    
   } catch (e) {
     res.status(500).json(e);
   }

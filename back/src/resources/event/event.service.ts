@@ -4,13 +4,18 @@ import { EventDTO} from './event.types';
 const prisma = new PrismaClient();
 
 async function getAllEvents(): Promise<Event[]> {
-  const events = await prisma.event.findMany({orderBy:{date:'desc'}});
+  const events = await prisma.event.findMany({where:{isPublished: true}, orderBy:{date:'desc'}});
   return events;
 }
 
-async function getAllEventsFromUser(creator: string): Promise<Event[]> {
-  const events = await prisma.event.findMany({where: {creatorId:creator},orderBy:{date:'desc'}});
-  return events;
+async function getAllEventsFromUser(creator: string, isPublished: boolean | null): Promise<Event[]> {
+  if(isPublished){
+    const events = await prisma.event.findMany({where: {creatorId:creator, isPublished: isPublished },orderBy:{date:'desc'}});
+    return events;
+  }else{
+    const events = await prisma.event.findMany({where: {creatorId:creator},orderBy:{date:'desc'}});
+    return events;
+  }
 }
 
 async function create(event:EventDTO): Promise<Event> {
