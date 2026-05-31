@@ -108,7 +108,7 @@
     // "skipDefaultLibCheck": true,                      /* Skip type checking .d.ts files that are included with TypeScript. */
     "skipLibCheck": true                                 /* Skip type checking all .d.ts files. */
   },
-  "include": ["./src/**/*"],
+  "include": ["./src/**/*", "prisma.config.ts", "prisma.config.ts"],
   "ts-node": {  "files": true },
   "exclude": ["./build/","node_modules"]
 }

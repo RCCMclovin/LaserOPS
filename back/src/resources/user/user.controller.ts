@@ -189,6 +189,7 @@ const checkRole = async (req: Request, res: Response) => {
         return;
     }else{
         res.status(StatusCodes.INTERNAL_SERVER_ERROR).send(ReasonPhrases.INTERNAL_SERVER_ERROR);
+        return;
     }
     
   } catch (e) {

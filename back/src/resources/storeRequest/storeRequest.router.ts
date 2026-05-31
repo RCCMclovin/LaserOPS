@@ -9,7 +9,7 @@ import isAuth from '../../middlewares/isAuth';
 const router = Router();
 
 router.get('/', isAdmin, storeRequestController.index);
-router.get('/:userId', isAdminOrSelf, storeRequestController.indexFromUser);
+router.get('/u/:userId', isAdminOrSelf, storeRequestController.indexFromUser);
 router.post('/', isAuth, validate(CreateRequestSchema), storeRequestController.create);
 router.get('/:requestId', isAuth, storeRequestController.read);
 router.delete('/:requestId', isAuth, storeRequestController.remove);
