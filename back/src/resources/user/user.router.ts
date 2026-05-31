@@ -11,6 +11,7 @@ const router = Router();
 router.get('/', isAdmin, userController.index);
 router.post('/', isAdmin, validate(userSchema), userController.create);
 router.get('/checkemail/:email', userController.checkEmail);
+router.get('/chkrole', isAuth, userController.checkRole);
 router.get('/:userId', userController.read);
 router.put(
   '/:userId',
@@ -19,6 +20,6 @@ router.put(
   userController.update,
 );
 router.delete('/:userId', isAdminOrSelf, userController.remove);
-router.get('/chkrole', isAuth, userController.checkRole);
+
 
 export default router;
