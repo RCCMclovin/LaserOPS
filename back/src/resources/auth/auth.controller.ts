@@ -109,6 +109,7 @@ const signUp = async (req: Request, res: Response) => {
       // eslint-disable-next-line @typescript-eslint/no-unused-vars
       const { password, ...newUsuario } = await userService.createUser(usuario);
       req.session.uid = newUsuario.id;
+      req.session.utid = newUsuario.userTypeId;
       res.status(StatusCodes.CREATED).send(newUsuario);
     }
     // eslint-disable-next-line @typescript-eslint/no-explicit-any
