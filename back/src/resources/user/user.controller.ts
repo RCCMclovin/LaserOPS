@@ -2,6 +2,7 @@ import { Request, Response } from 'express';
 import userService from './user.service';
 import { CreateUserDTO, UpdateUserDTO} from './user.types';
 import { ReasonPhrases, StatusCodes } from 'http-status-codes';
+import { UserTypes } from '../userType/userType.consts';
 
 const index = async (req: Request, res: Response) => {
   /*
@@ -162,6 +163,34 @@ const checkEmail = async (req: Request, res: Response) => {
   }
 };
 
+const checkRole = async (req: Request, res: Response) => {
+  /*
+ #swagger.tags = ["Usuários"]
+ #swagger.summary = 'Retorna o nome e tipo do usuário logado.'
+ #swagger.responses[200] = {
+ schema: { $ref: '#/definitions/UserRoleDTO' }
+ }
+ #swagger.responses[500] = {
+ description: "Internal Server Error"
+ }
+*/
+  try {
+    const user = await userService.readUser(req.session.uid as string);
+    if(user.userTypeId == UserTypes.admin){
+        res.json({name:user.name, role: "admin"});
+    }
+    if(user.userTypeId == UserTypes.client){
+        res.json({name:user.name, role: "client"});
+    }
+    if(user.userTypeId == UserTypes.store){
+        res.json({name:user.name, role: "store"});
+    }
+    res.status(StatusCodes.INTERNAL_SERVER_ERROR).send(ReasonPhrases.INTERNAL_SERVER_ERROR);
+  } catch (e) {
+    res.status(StatusCodes.INTERNAL_SERVER_ERROR).json(e);
+  }
+};
+
 export default {
   index,
   create,
@@ -169,4 +198,5 @@ export default {
   remove,
   read,
   checkEmail,
+  checkRole,
 };

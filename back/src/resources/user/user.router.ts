@@ -4,6 +4,7 @@ import { userSchema } from './user.schema';
 import { validate } from '../../middlewares/validate';
 import isAdmin from '../../middlewares/isAdmin';
 import isAdminOrSelf from '../../middlewares/isAdminOrSelf';
+import isAuth from '../../middlewares/isAuth';
 
 const router = Router();
 
@@ -18,5 +19,6 @@ router.put(
   userController.update,
 );
 router.delete('/:userId', isAdminOrSelf, userController.remove);
+router.get('/chkrole', isAuth, userController.checkRole);
 
 export default router;

@@ -41,6 +41,7 @@ model Event {
   description   String    @db.VarChar(600)
   creator       User      @relation(fields: [creatorId], references: [id])
   creatorId     String    @db.Char(36)
+  code          String    @db.Char(8)@unique
   isPublished   Boolean   @default(false) @map("is_published")
   createdAt     DateTime  @default(now()) @map("created_at")
   updatedAt     DateTime  @updatedAt @map("updated_at")
