@@ -1,30 +1,59 @@
 import React, { useState, useEffect } from 'react';
+import axios from 'axios';
+import { useNavigate } from 'react-router-dom';
 
 function Dashboard() {
   const [userRole, setUserRole] = useState('');
   const [userName, setUserName] = useState('');
+  //Deixa a página no estado de carregando até pegarmos o role
+  const [carregando, setCarregando] = useState(true); 
+  const navigate = useNavigate();
 
-  //Roda assim que a página carrega, buscando os dados salvos no login
+  // Rodaquando a pessoa entra na página
   useEffect(() => {
-    // Buscando as informações do localStorage (salvo em Login.csx)
-    // Se não houver nada, definir como 'Client' para testes
-    const role = localStorage.getItem('userRole') || 'Admin'; 
-    const name = localStorage.getItem('userName') || 'Jogador';
+    const verificarUsuarioLogado = async () => {
+      try {
+        // Pega o nome e role do usuário
+        const resposta = await axios.get('http://localhost:3334/v1/auth/me', { 
+          withCredentials: true 
+        });
 
-    setUserRole(role);
-    setUserName(name);
-  }, []);
+        setUserName(resposta.data.name);
+        setUserRole(resposta.data.role); 
+        setCarregando(false); // Já temos os dados, pode liberar a tela!
 
-  // Função para simular o Logout
-  const handleLogout = () => {
-    localStorage.clear();
-    window.location.reload(); // Recarrega a página para limpar o estado
+      } catch (error) {
+        console.error("Erro ao validar sessão:", error);
+        // Caso  de erro, manda de volta pro Login
+        navigate('/');
+      }
+    };
+
+    verificarUsuarioLogado();
+  }, [navigate]);
+
+  // Função de Logout modificada
+  const handleLogout = async () => {
+    try {
+      // Opcional: Avisar o back-end para derrubar a sessão lá também
+      await axios.post('http://localhost:3334/v1/auth/logout', {}, { withCredentials: true });
+    } catch (err) {
+      console.log("Erro ao deslogar no servidor, limpando local...");
+    }
+    navigate('/');
   };
+
+  // Enquanto o servidor não responde, mostra uma tela neutra
+  if (carregando) {
+    return (
+      <div style={{ display: 'flex', justifyContent: 'center', alignItems: 'center', height: '100vh' }}>
+        <h2>Carregando sistema LaserOps...</h2>
+      </div>
+    );
+  }
 
   return (
     <div style={{ maxWidth: '800px', margin: '40px auto', padding: '20px', fontFamily: 'Arial, sans-serif' }}>
-      
-      {/* Cabeçalho do Dashboard */}
       <header style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', borderBottom: '2px solid #333', paddingBottom: '10px' }}>
         <div>
           <h1>LaserOps Central</h1>
@@ -35,90 +64,59 @@ function Dashboard() {
         </button>
       </header>
 
-      {/* Conteúdo Principal */}
       <main style={{ marginTop: '30px' }}>
         <h2>Painel de Controle de LaserTag</h2>
-        <p>Abaixo estão as operações disponíveis para o seu perfil:</p>
-
+        
         <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: '20px', marginTop: '20px' }}>
-          
-          {/* ================= SEÇÃO DO CLIENT / JOGADOR ================= */}
+          {/* SEÇÃO DO CLIENT */}
           {userRole === 'Client' && (
             <>
               <div style={cardStyle}>
                 <h3>🎮 Entrar em uma Partida</h3>
-                <p>Busque arenas ativas na sua região e digite o código da sala para se conectar ao colete laser.</p>
+                <p>Busque arenas ativas na sua região e digite o código da sala.</p>
                 <button style={buttonStyle}>Buscar Partidas</button>
               </div>
-
               <div style={cardStyle}>
                 <h3>🏪 Tornar-se uma Arena (Store)</h3>
-                <p>Quer gerenciar seus próprios jogos e equipamentos? Envie uma solicitação para se tornar uma loja parceira.</p>
+                <p>Envie uma solicitação para se tornar uma loja parceira.</p>
                 <button style={{ ...buttonStyle, backgroundColor: '#28a745' }}>Solicitar Upgrade</button>
               </div>
             </>
           )}
 
-          {/* ================= SEÇÃO DA STORE / ARENA ================= */}
+          {/* SEÇÃO DA STORE */}
           {userRole === 'Store' && (
             <>
               <div style={cardStyle}>
                 <h3>⚡ Criar Nova Partida</h3>
-                <p>Configure o modo de jogo (Team Deathmatch, Capture a Bandeira), limite de tempo e registre os coletes.</p>
+                <p>Configure o modo de jogo e registre os coletes.</p>
                 <button style={{ ...buttonStyle, backgroundColor: '#17a2b8' }}>Nova Partida</button>
               </div>
-
               <div style={cardStyle}>
                 <h3>📋 Gerenciar Partidas</h3>
-                <p>Visualize o placar em tempo real, encerre jogos em andamento e veja o histórico de pontuações.</p>
+                <p>Visualize o placar em tempo real.</p>
                 <button style={buttonStyle}>Acessar Painel da Loja</button>
               </div>
             </>
           )}
 
-          {/* ================= SEÇÃO DO ADMIN ================= */}
+          {/* SEÇÃO DO ADMIN */}
           {userRole === 'Admin' && (
-            <>
-              <div style={{ ...cardStyle, gridColumn: '1 / -1', borderColor: '#dc3545' }}>
-                <h3 style={{ color: '#dc3545' }}>🛡️ Visão Geral do Administrador</h3>
-                <p>Área restrita para manutenção do ecossistema LaserOps.</p>
-                
-                <div style={{ border: '1px solid #ddd', padding: '15px', marginTop: '15px', borderRadius: '4px', backgroundColor: '#f8f9fa' }}>
-                  <h4>Pendências: Solicitações de Upgrade (Client ➜ Store)</h4>
-                  <p style={{ fontSize: '14px', color: '#666' }}>Há 2 novos clientes aguardando aprovação para registrar suas arenas comerciais.</p>
-                  <button style={{ ...buttonStyle, backgroundColor: '#dc3545', width: 'auto', padding: '10px 20px' }}>
-                    Analisar Solicitações
-                  </button>
-                </div>
+            <div style={{ ...cardStyle, gridColumn: '1 / -1', borderColor: '#dc3545' }}>
+              <h3 style={{ color: '#dc3545' }}>🛡️ Visão Geral do Administrador</h3>
+              <div style={{ border: '1px solid #ddd', padding: '15px', marginTop: '15px', borderRadius: '4px', backgroundColor: '#f8f9fa' }}>
+                <h4>Pendências: Solicitações de Upgrade (Client ➜ Store)</h4>
+                <button style={{ ...buttonStyle, backgroundColor: '#dc3545', width: 'auto' }}>Analisar Solicitações</button>
               </div>
-            </>
+            </div>
           )}
-
         </div>
       </main>
     </div>
   );
 }
 
-// Estilos rápidos em objetos para não precisarmos focar em CSS agora
-const cardStyle = {
-  border: '1px solid #ddd',
-  padding: '20px',
-  borderRadius: '8px',
-  backgroundColor: '#fff',
-  boxShadow: '0 4px 6px rgba(0,0,0,0.05)'
-};
-
-const buttonStyle = {
-  width: '100%',
-  padding: '10px',
-  marginTop: '15px',
-  backgroundColor: '#007bff',
-  color: 'white',
-  border: 'none',
-  borderRadius: '4px',
-  fontWeight: 'bold',
-  cursor: 'pointer'
-};
+const cardStyle = { border: '1px solid #ddd', padding: '20px', borderRadius: '8px', backgroundColor: '#fff' };
+const buttonStyle = { width: '100%', padding: '10px', marginTop: '15px', backgroundColor: '#007bff', color: 'white', border: 'none', borderRadius: '4px', fontWeight: 'bold', cursor: 'pointer' };
 
 export default Dashboard;

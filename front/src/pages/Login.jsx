@@ -1,8 +1,11 @@
 import React, { useState } from 'react';
 import axios from 'axios';
+import { useNavigate } from 'react-router-dom';
 
 function Login() {
-  // Estados
+  const navigate = useNavigate(); //Inicializa o redirecionador
+
+  // States  
   const [email, setEmail] = useState('');
   const [senha, setSenha] = useState('');
   const [erro, setErro] = useState('');
@@ -16,20 +19,12 @@ function Login() {
       const resposta = await axios.post('http://localhost:3334/v1/auth/login', {
         email: email,
         password: senha
+      },{
+        withCredentials: true
       });
 
-      // 2. Login validade,  recebe o Token JWT e o Role do usuário
-      const token = resposta.data.token;
-      const userRole = resposta.data.role; 
-
-      // 3. Salva o Token e a Role
-      localStorage.setItem('token', token);
-      localStorage.setItem('userRole', userRole);
-
       alert('Login feito com sucesso!');
-      
-      // 4. Aqui você redirecionaria o usuário para a Dashboard
-      // window.location.href = '/dashboard';
+      navigate('/dashboard');
 
     } catch (error) {
       // Caso o back-end retorne erro (senha errada, usuário não existe)
