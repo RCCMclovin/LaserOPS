@@ -27,7 +27,7 @@
     "swagger": "ts-node src/swagger.ts"
   },
   "dependencies": {
-    "@prisma/client": "6.12.0",
+    "@prisma/client": "^6.12.0",
     "bcryptjs": "^2.4.3",
     "body-parser": "^1.20.3",
     "cookie-parser": "^1.4.7",
@@ -60,21 +60,18 @@
     "install": "^0.13.0",
     "nodemon": "^3.1.7",
     "prettier": "3.3.3",
-    "prisma": "6.12.0",
+    "prisma": "^6.12.0",
     "swagger-autogen": "^2.23.7",
     "ts-node": "^10.9.2",
     "tsx": "^4.19.2",
     "typescript": "^5.7.3",
     "typescript-eslint": "^8.57.2"
   },
-  "prisma": {
-    "seed": "ts-node ./prisma/seed.ts"
-  },
   "allowScripts": {
-    "@prisma/client@6.12.0": true,
-    "@prisma/engines@6.12.0": true,
     "@scarf/scarf@1.4.0": true,
     "esbuild@0.28.0": true,
-    "prisma@6.12.0": true
+    "@prisma/client@6.19.3": true,
+    "@prisma/engines@6.19.3": true,
+    "prisma@6.19.3": true
   }
 }

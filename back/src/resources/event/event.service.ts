@@ -1,0 +1,1 @@
+import { PrismaClient, Event } from '../../generated/prisma/client';
