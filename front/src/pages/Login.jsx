@@ -1,8 +1,11 @@
 import React, { useState } from 'react';
 import axios from 'axios';
+import { useNavigate } from 'react-router-dom';
 
 function Login() {
-  // Estados
+  const navigate = useNavigate(); //Inicializa o redirecionador
+
+  // States  
   const [email, setEmail] = useState('');
   const [senha, setSenha] = useState('');
   const [erro, setErro] = useState('');
@@ -15,21 +18,13 @@ function Login() {
       // 1. Envia dados para Back-end (Checar porta)
       const resposta = await axios.post('http://localhost:3334/v1/auth/login', {
         email: email,
-        senha: senha
+        password: senha
+      },{
+        withCredentials: true
       });
 
-      // 2. Login validade,  recebe o Token JWT e o Role do usuário
-      const token = resposta.data.token;
-      const userRole = resposta.data.role; 
-
-      // 3. Salva o Token e a Role
-      localStorage.setItem('token', token);
-      localStorage.setItem('userRole', userRole);
-
       alert('Login feito com sucesso!');
-      
-      // 4. Aqui você redirecionaria o usuário para a Dashboard
-      // window.location.href = '/dashboard';
+      navigate('/dashboard');
 
     } catch (error) {
       // Caso o back-end retorne erro (senha errada, usuário não existe)
@@ -39,7 +34,7 @@ function Login() {
 
   return (
     <div style={{ maxWidth: '400px', margin: '50px auto', padding: '20px', border: '1px solid #ccc' }}>
-      <h2>Acessar o Sistema</h2>
+      <h2>Acessar LaserOPS</h2>
       
       {erro && <p style={{ color: 'red' }}>{erro}</p>}
 
@@ -70,6 +65,16 @@ function Login() {
           Entrar
         </button>
       </form>
+
+      <div style={{ marginTop: '20px', textAlign: 'center', borderTop: '1px solid #eee', paddingTop: '15px' }}>
+        <p style={{ margin: '0 0 10px 0', fontSize: '14px', color: '#666' }}>Novo na arena?</p>
+        <button 
+          onClick={() => navigate('/signup')} 
+          style={{ width: '100%', padding: '10px', backgroundColor: '#6c757d', color: 'white', border: 'none', borderRadius: '4px', fontWeight: 'bold', cursor: 'pointer' }}
+        >
+          Criar uma Conta
+        </button>
+      </div>
     </div>
   );
 }
