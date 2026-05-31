@@ -197,6 +197,7 @@ const checkRole = async (req: Request, res: Response) => {
     if (!user) {
         return res.status(StatusCodes.NOT_FOUND).json({ mensagem: "Usuário não encontrado." });
     }
+    req.session.utid = user.userTypeId;
     if (user.userTypeId === UserTypes.admin) {
         return res.json({ name: user.name, role: "admin" });
     }
