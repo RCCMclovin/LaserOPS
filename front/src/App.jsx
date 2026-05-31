@@ -2,6 +2,7 @@ import React from 'react';
 import { BrowserRouter, Routes, Route, Navigate } from 'react-router-dom';
 import Login from './pages/Login';
 import Dashboard from './pages/Dashboard';
+import Signup from './pages/Signup'; 
 
 function App() {
   return (
@@ -9,6 +10,9 @@ function App() {
       <Routes>
         {/* Rota da tela de Login (Página Inicial) */}
         <Route path="/" element={<Login />} />
+
+        {/*Rota da tela de SignUp*/}
+        <Route path="/signup" element={<Signup />} />
 
         {/* Rota do Dashboard */}
         <Route path="/dashboard" element={<Dashboard />} />

@@ -34,7 +34,7 @@ function Login() {
 
   return (
     <div style={{ maxWidth: '400px', margin: '50px auto', padding: '20px', border: '1px solid #ccc' }}>
-      <h2>Acessar o Sistema</h2>
+      <h2>Acessar LaserOPS</h2>
       
       {erro && <p style={{ color: 'red' }}>{erro}</p>}
 
@@ -65,6 +65,16 @@ function Login() {
           Entrar
         </button>
       </form>
+
+      <div style={{ marginTop: '20px', textAlign: 'center', borderTop: '1px solid #eee', paddingTop: '15px' }}>
+        <p style={{ margin: '0 0 10px 0', fontSize: '14px', color: '#666' }}>Novo na arena?</p>
+        <button 
+          onClick={() => navigate('/signup')} 
+          style={{ width: '100%', padding: '10px', backgroundColor: '#6c757d', color: 'white', border: 'none', borderRadius: '4px', fontWeight: 'bold', cursor: 'pointer' }}
+        >
+          Criar uma Conta
+        </button>
+      </div>
     </div>
   );
 }
