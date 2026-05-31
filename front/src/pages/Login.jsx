@@ -13,7 +13,7 @@ function Login() {
 
     try {
       // 1. Envia dados para Back-end (Checar porta)
-      const resposta = await axios.post('http://localhost:3000/login', {
+      const resposta = await axios.post('http://localhost:3334/v1/auth/login', {
         email: email,
         senha: senha
       });
