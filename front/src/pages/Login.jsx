@@ -22,8 +22,7 @@ function Login() {
       },{
         withCredentials: true
       });
-
-      alert('Login feito com sucesso!');
+      
       navigate('/dashboard');
 
     } catch (error) {
