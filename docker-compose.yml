@@ -1,0 +1,36 @@
+networks:
+  network2:
+    driver: bridge
+
+volumes:
+  output-data:
+
+services:
+  backend:
+    container_name: "laserops-backend"
+    hostname: "laserops-backend"
+    build: 
+      context: ./back
+      dockerfile: ./Dockerfile
+    networks:
+      - network2
+    volumes:
+      - output-data:/app/output
+    restart:
+      unless-stopped 
+    ports:
+      - 192.168.1.10:3334:3334
+  frontend:
+    container_name: "laserops-frontend"
+    hostname: "laserops-frontend"
+    build:
+      context: ./front
+      dockerfile: ./Dockerfile
+    networks:
+      - network2
+    volumes:
+      - output-data:/app/output
+    restart:
+      unless-stopped
+    ports:
+      - 192.168.1.10:3000:80
