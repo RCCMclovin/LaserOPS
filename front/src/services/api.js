@@ -1,7 +1,7 @@
 import axios from 'axios';
 
 export const api = axios.create({
-  baseURL: import.meta.env.VITE_API_URL || 'http://localhost:3334/v1',
+  baseURL: import.meta.env.VITE_API_URL || 'https://laseropsback.rcchome.com.br/v1',
   withCredentials: true,
 });
 
