@@ -31,7 +31,7 @@ app.use(
   cors({
     origin: '*', //Para resolver um erro de proxy
     methods: 'GET,HEAD,PUT,PATCH,POST,DELETE,OPTIONS',
-    credentials: true,
+    //credentials: true,
   }),
 );
 
