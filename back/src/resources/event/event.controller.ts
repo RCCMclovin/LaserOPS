@@ -55,7 +55,7 @@ const indexFromUser = async (req: Request, res: Response) => {
 
     const events = await eventService.getAllEventsFromUser(
       req.params.userId as string,
-      isOwnerOrAdmin ? null : true,
+      isOwnerOrAdmin ? true : null,
     );
 
     return res.json(isOwnerOrAdmin ? events : events.map(toPublicEvent));
