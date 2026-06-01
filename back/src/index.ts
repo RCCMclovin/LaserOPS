@@ -29,7 +29,16 @@ const PORT = process.env.PORT || 3333;
 
 
 const corsOptions: cors.CorsOptions = {
-  origin: process.env.CORS_ORIGIN,
+  origin: function (origin, callback) {
+    // Allow requests with no origin (like mobile apps or curl)
+    if (!origin) return callback(null, true);
+
+    if (process.env.CORS_ORIGIN?.includes(origin)) {
+      callback(null, true); // Origin allowed
+    } else {
+      callback(new Error('Not allowed by CORS')); // Origin not allowed
+    }
+  },
   credentials: true,
   methods: ['GET', 'POST', 'PUT', 'DELETE', 'OPTIONS'],
   allowedHeaders: ['Content-Type', 'Authorization'],
