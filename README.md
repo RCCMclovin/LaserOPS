@@ -1,5 +1,17 @@
 # LaserOps — Autenticação e Controle de Acesso
 
+## Alunos
+
+* Gabriel Toledano Feitosa
+* Larissa de Andrade Silva
+* Rafael Castilho Carvalho
+
+## Links
+
+* **Github**: ![https://github.com/RCCMclovin/LaserOPS](https://github.com/RCCMclovin/LaserOPS)
+
+* **Demo**: ![https://laserops.rcchome.com.br](https://laserops.rcchome.com.br)
+
 ## Descrição
 
 O **LaserOps** é uma aplicação web para gerenciamento e participação em eventos interativos. O sistema foi desenvolvido como atividade prática de **autenticação e controle de acesso**, com backend em Node.js/Express e frontend em React.
