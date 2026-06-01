@@ -22,14 +22,21 @@ A aplicação permite cadastro, login, controle de sessão, papéis de usuário,
 
 A implementação contempla os pontos solicitados na atividade:
 
-- cadastro de usuários;
-- login funcional;
-- armazenamento seguro de senhas com hash;
-- autenticação baseada em token de sessão HTTP-only;
-- proteção de rotas privadas;
-- controle de acesso com mais de um nível de permissão;
-- permissões verificadas no backend, não apenas no frontend;
-- interação funcional com eventos e participação.
+* cadastro de usuários;
+
+* login funcional;
+
+* armazenamento seguro de senhas com hash;
+
+* autenticação baseada em token de sessão HTTP-only;
+
+* proteção de rotas privadas;
+
+* controle de acesso com mais de um nível de permissão;
+
+* permissões verificadas no backend, não apenas no frontend;
+
+* interação funcional com eventos e participação.
 
 ## Fluxo de autenticação
 
@@ -57,12 +64,17 @@ O controle de acesso é aplicado no backend por middlewares e verificações nos
 
 Principais mecanismos:
 
-- `isAuth`: exige usuário autenticado;
-- `isAdmin`: restringe acesso a administradores;
-- `isAdminOrSelf`: permite acesso ao administrador ou ao próprio usuário;
-- verificação de propriedade do evento: apenas o criador do evento ou um administrador pode editar, publicar, despublicar ou remover o evento;
-- bloqueio de autopromoção: usuários comuns não podem alterar diretamente seu próprio papel;
-- rota específica para consultar as participações do usuário logado.
+* `isAuth`: exige usuário autenticado;
+
+* `isAdmin`: restringe acesso a administradores;
+
+* `isAdminOrSelf`: permite acesso ao administrador ou ao próprio usuário;
+
+* verificação de propriedade do evento: apenas o criador do evento ou um administrador pode editar, publicar, despublicar ou remover o evento;
+
+* bloqueio de autopromoção: usuários comuns não podem alterar diretamente seu próprio papel;
+
+* rota específica para consultar as participações do usuário logado.
 
 Essas regras impedem que as permissões sejam apenas visuais. Mesmo que um usuário tente chamar uma rota diretamente, o backend valida autenticação e autorização antes de executar a ação.
 
