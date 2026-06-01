@@ -29,11 +29,14 @@ const PORT = process.env.PORT || 3333;
 
 app.use(
   cors({
-    origin: '*', //Para resolver um erro de proxy
-    methods: 'GET,HEAD,PUT,PATCH,POST,DELETE,OPTIONS',
-    //credentials: true,
+    origin: process.env.CORS_ORIGIN,
+    credentials: true,
+    methods: ['GET', 'POST', 'PUT', 'DELETE', 'OPTIONS'],
+    allowedHeaders: ['Content-Type', 'Authorization'],
+    optionsSuccessStatus: 204,
   }),
 );
+app.set('trust proxy', 1);
 
 app.use(helmet());
 app.use(limiter);
