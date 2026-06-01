@@ -29,7 +29,7 @@ const PORT = process.env.PORT || 3333;
 
 
 const corsOptions: cors.CorsOptions = {
-  origin: process.env.CORS_ORIGIN,
+  origin: 'https://laserops.rcchome.com.br',
   credentials: true,
   methods: ['GET', 'POST', 'PUT', 'DELETE', 'OPTIONS'],
   allowedHeaders: ['Content-Type', 'Authorization'],
