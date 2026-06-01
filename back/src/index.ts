@@ -27,9 +27,6 @@ const limiter = rateLimit({
 const app = express();
 const PORT = process.env.PORT || 3333;
 
-app.use(helmet());
-app.use(limiter);
-
 app.use(
   cors({
     origin: process.env.CORS_ORIGIN,
@@ -37,6 +34,9 @@ app.use(
     credentials: true,
   }),
 );
+
+app.use(helmet());
+app.use(limiter);
 
 app.use(cookieParser());
 
