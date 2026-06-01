@@ -78,12 +78,6 @@ function Login() {
           <Link to="/signup">Criar conta</Link>
         </div>
       </section>
-
-      <aside className="auth-notes" aria-label="Resumo do sistema">
-        <span>participantes</span>
-        <span>organizadores</span>
-        <span>administração</span>
-      </aside>
     </main>
   );
 }
