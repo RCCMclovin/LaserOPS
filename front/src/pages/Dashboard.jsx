@@ -66,7 +66,15 @@ function Dashboard() {
 
   const roleLabel = useMemo(() => roleLabels[session.role] || 'Usuário', [session.role]);
   const canManageEvents = session.role === 'store' || session.role === 'admin';
-  const visibleEvents = useMemo(() => uniqueEvents(events, managedEvents), [events, managedEvents]);
+  const unpublishedManagedEvents = useMemo(
+    () => managedEvents.filter((event) => event && event.isPublished !== true),
+    [managedEvents],
+  );
+  const publishedManagedEvents = useMemo(
+    () => managedEvents.filter((event) => event && event.isPublished === true),
+    [managedEvents],
+  );
+  const visibleEvents = useMemo(() => uniqueEvents(events, publishedManagedEvents), [events, publishedManagedEvents]);
   const pendingRequests = useMemo(
     () => adminRequests.filter((request) => String(request.status).toLowerCase() === 'pending'),
     [adminRequests],
@@ -386,6 +394,83 @@ function Dashboard() {
             </label>
             <button className="btn btn-primary" type="submit" disabled={busy}>Criar evento</button>
           </form>
+
+          <div className="draft-events-box">
+            <div className="draft-heading">
+              <div>
+                <h3>Meus eventos não publicados</h3>
+                <p className="muted small-text">
+                  Eventos criados começam como rascunho. Publique aqui quando quiser que apareçam para participantes.
+                </p>
+              </div>
+              <button className="btn btn-secondary compact-btn" type="button" onClick={() => loadManagedEvents(session)} disabled={busy}>
+                Atualizar rascunhos
+              </button>
+            </div>
+
+            {unpublishedManagedEvents.length === 0 ? (
+              <div className="empty-state compact-empty">
+                <h3>Nenhum rascunho no momento</h3>
+                <p>Quando você criar um evento, ele aparecerá aqui antes de ser publicado.</p>
+              </div>
+            ) : (
+              <div className="draft-list">
+                {unpublishedManagedEvents.map((event) => {
+                  const isEditing = editingEventId === event.id;
+
+                  return (
+                    <article className="draft-card" key={event.id}>
+                      <div className="event-topline">
+                        <span className="date-chip">{formatDate(event.date)}</span>
+                        <span className="publish-chip draft">Rascunho</span>
+                      </div>
+
+                      {isEditing ? (
+                        <form className="edit-event-form" onSubmit={(e) => handleUpdateEvent(e, event.id)}>
+                          <label>
+                            <span>Descrição</span>
+                            <textarea
+                              value={editEvent.description}
+                              onChange={(e) => setEditEvent((current) => ({ ...current, description: e.target.value }))}
+                              minLength={3}
+                              maxLength={600}
+                              required
+                            />
+                          </label>
+                          <label>
+                            <span>Data e hora</span>
+                            <input
+                              type="datetime-local"
+                              value={editEvent.date}
+                              onChange={(e) => setEditEvent((current) => ({ ...current, date: e.target.value }))}
+                              required
+                            />
+                          </label>
+                          <div className="inline-actions">
+                            <button className="btn btn-primary compact-btn" type="submit" disabled={busy}>Salvar</button>
+                            <button className="btn btn-ghost compact-btn" type="button" onClick={cancelEditEvent} disabled={busy}>Cancelar</button>
+                          </div>
+                        </form>
+                      ) : (
+                        <>
+                          <h4>{event.description}</h4>
+                          {event.code && <code className="event-code">Código para jogadores: {event.code}</code>}
+                          <p className="muted small-text">
+                            Este evento ainda não aparece para participantes. Clique em Publicar para liberar a inscrição.
+                          </p>
+                          <div className="manager-actions draft-actions">
+                            <button className="btn btn-secondary compact-btn" type="button" onClick={() => startEditEvent(event)} disabled={busy}>Editar</button>
+                            <button className="btn btn-primary compact-btn" type="button" onClick={() => handleTogglePublish(event.id)} disabled={busy}>Publicar</button>
+                            <button className="btn btn-danger compact-btn" type="button" onClick={() => handleDeleteEvent(event.id)} disabled={busy}>Remover</button>
+                          </div>
+                        </>
+                      )}
+                    </article>
+                  );
+                })}
+              </div>
+            )}
+          </div>
         </section>
       )}
 
