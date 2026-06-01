@@ -27,10 +27,7 @@ const app = express();
 const PORT = process.env.PORT || 3333;
 
 
-const allowedOrigins = process.env.CORS_ORIGIN? process.env.CORS_ORIGIN: [
-  "http://laserops.rcchome.com.br",
-  "https://laserops.rcchome.com.br"
-];
+const allowedOrigins = process.env.CORS_ORIGIN?.split(',');
 
 app.set('trust proxy', 1);
 
