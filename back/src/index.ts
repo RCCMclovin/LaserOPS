@@ -29,7 +29,7 @@ const PORT = process.env.PORT || 3333;
 
 app.use(
   cors({
-    origin: '*',
+    origin: '*', //Para resolver um erro de proxy
     methods: 'GET,HEAD,PUT,PATCH,POST,DELETE,OPTIONS',
     credentials: true,
   }),
