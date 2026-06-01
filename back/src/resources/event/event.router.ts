@@ -7,6 +7,7 @@ import { CreateEventDTOSchema } from './event.schema';
 const router = Router();
 
 router.get('/', isAuth, eventController.index);
+router.get('/mine', isAuth, eventController.mine);
 router.post('/publish/:eventId', isAuth, eventController.togglePublish);
 router.get('/read/:eventId', isAuth, eventController.read);
 router.get('/:userId', isAuth, eventController.indexFromUser);

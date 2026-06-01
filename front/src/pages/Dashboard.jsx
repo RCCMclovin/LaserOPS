@@ -74,6 +74,10 @@ function Dashboard() {
     () => managedEvents.filter((event) => event && event.isPublished === true),
     [managedEvents],
   );
+  const managedEventIds = useMemo(
+    () => new Set(managedEvents.map((event) => event.id)),
+    [managedEvents],
+  );
   const visibleEvents = useMemo(() => uniqueEvents(events, publishedManagedEvents), [events, publishedManagedEvents]);
   const pendingRequests = useMemo(
     () => adminRequests.filter((request) => String(request.status).toLowerCase() === 'pending'),
@@ -98,12 +102,12 @@ function Dashboard() {
   };
 
   const loadManagedEvents = async (currentSession = session) => {
-    if (!currentSession.id || !['store', 'admin'].includes(currentSession.role)) {
+    if (!['store', 'admin'].includes(currentSession.role)) {
       setManagedEvents([]);
       return;
     }
 
-    const { data } = await api.get(`/event/${currentSession.id}`);
+    const { data } = await api.get('/event/mine');
     setManagedEvents(Array.isArray(data) ? data : []);
   };
 
@@ -533,7 +537,7 @@ function Dashboard() {
               const joined = joinedEvents[event.id];
               const joinedLabel = participationLabels[joined?.role] || joined?.role;
               const organizerName = event.creator?.name || event.creatorName || 'Organizador não informado';
-              const isManager = session.role === 'admin' || event.creatorId === session.id;
+              const isManager = session.role === 'admin' || event.creatorId === session.id || managedEventIds.has(event.id);
               const isEditing = editingEventId === event.id;
 
               return (

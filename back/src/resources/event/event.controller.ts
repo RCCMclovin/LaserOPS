@@ -33,6 +33,35 @@ const index = async (req: Request, res: Response) => {
     return res.status(500).json(e);
   }
 };
+const mine = async (req: Request, res: Response) => {
+    /*
+ #swagger.tags = ["Eventos"]
+ #swagger.summary = 'Recupera dados de todos os eventos do usuário logado.'
+ #swagger.responses[200] = {
+ schema: [{ $ref: '#/definitions/EventPublic' }]
+ }
+ #swagger.responses[403] = {
+ description: 'User unautorized.'
+ }
+ #swagger.responses[500] = {
+ description: "Internal Server Error"
+ }
+*/
+  try {
+    if (req.session.utid === UserTypes.client) {
+      return res.status(StatusCodes.FORBIDDEN).send(ReasonPhrases.FORBIDDEN);
+    }
+
+    const events = await eventService.getAllEventsFromUser(
+      req.session.uid as string,
+      null,
+    );
+
+    return res.json(events);
+  } catch (e) {
+    return res.status(StatusCodes.INTERNAL_SERVER_ERROR).json(e);
+  }
+};
 const indexFromUser = async (req: Request, res: Response) => {
   /*
  #swagger.tags = ["Eventos"]
@@ -292,4 +321,5 @@ export default{
     update,
     togglePublish,
     read,
+    mine,
 }
