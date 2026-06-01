@@ -5,7 +5,6 @@ import cookieParser from 'cookie-parser';
 import session from './middlewares/session';
 import router from './router/index';
 import validateEnv from './utils/validateEnv';
-import cors from 'cors';
 import bodyParser from 'body-parser';
 import helmet from 'helmet';
 
@@ -28,27 +27,23 @@ const app = express();
 const PORT = process.env.PORT || 3333;
 
 
-const corsOptions: cors.CorsOptions = {
-  origin: function (origin, callback) {
-    // Allow requests with no origin (like mobile apps or curl)
-    if (!origin) return callback(null, true);
-
-    if (process.env.CORS_ORIGIN?.includes(origin)) {
-      callback(null, true); // Origin allowed
-    } else {
-      callback(new Error('Not allowed by CORS')); // Origin not allowed
-    }
-  },
-  credentials: true,
-  methods: ['GET', 'POST', 'PUT', 'DELETE', 'OPTIONS'],
-  allowedHeaders: ['Content-Type', 'Authorization'],
-  optionsSuccessStatus: 204,
-};
+const allowedOrigins = process.env.CORS_ORIGIN? process.env.CORS_ORIGIN: [
+  "http://laserops.rcchome.com.br",
+  "https://laserops.rcchome.com.br"
+];
 
 app.set('trust proxy', 1);
 
-app.use(cors(corsOptions));
-app.options('*', cors(corsOptions));
+
+app.use((req, res, next) => {
+  const origin: string = req.headers.origin as string;
+  if (allowedOrigins.includes(origin)) {
+    res.setHeader('Access-Control-Allow-Origin', origin);
+  }
+  res.setHeader('Access-Control-Allow-Methods', 'GET, POST, PUT, DELETE');
+  res.setHeader('Access-Control-Allow-Headers', 'Content-Type');
+  next();
+  });
 
 app.use(helmet());
 app.use(limiter);
