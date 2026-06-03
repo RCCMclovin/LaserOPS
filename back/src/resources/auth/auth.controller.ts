@@ -28,7 +28,6 @@ schema: { $ref: '#/definitions/Auth' }
  }
 */
  const credentials = req.body as AuthDTO;
- console.log(credentials);
  const data = await authService.checkAuth(credentials);
 
  if (data) {
