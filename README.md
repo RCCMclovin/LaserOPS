@@ -12,6 +12,10 @@
 
 * **Demo**: ![https://laserops.rcchome.com.br](https://laserops.rcchome.com.br)
 
+### Observação:
+
+O demo está no ar usando um servidor próprio e, portanto, está sujeito a alguma instabilidade, podendo cair devido à quedas de energia ou outros problemas de infra. Caso o demo não esteja disponível, favor entrar em contato através do email "rcc@icomp.ufam.edu.br".
+
 ## Descrição
 
 O **LaserOps** é uma aplicação web para gerenciamento e participação em eventos interativos. O sistema foi desenvolvido como atividade prática de **autenticação e controle de acesso**, com backend em Node.js/Express e frontend em React.
